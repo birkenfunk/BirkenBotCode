@@ -1,0 +1,4 @@
+greeting	 hi hi. hello how are you ? hey . hows it going good morning good evening good afternoon howdy
+conversation-continue	 ok wow great oh is it ? oh ohh Thats great Good Really hmm lemme think hm hmmm hmmmmm
+need-help	 I need help! help sos omg i dont know! idk HELP
+conversation-complete	 Thanks done that's all thats it. thats it I am done Thank you for information Thank. thanks. thank you. thanks nothing else thats it.
