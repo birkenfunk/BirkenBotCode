@@ -56,7 +56,7 @@ local.properties
 .apt_generated_test/
 
 # Scala IDE specific (Scala & Java development for Eclipse)
-.cache-main
+.cache-de.Birkenfunk.main
 .scala_dependencies
 .worksheet
 
