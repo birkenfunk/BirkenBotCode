@@ -1,7 +1,0 @@
-If % in front of Line Spaces won't be removed
-Username= DB-Bot
-Password= 99D^rGUsWx89
-Database= Birkenfunk.de:3306/DB-Bot
-Token= NDcxMzQ0MjgwOTMwMzUzMTUz.W1dLkQ.cpyxj4BilWdrJAhDu2V5PrgaJHY
-%Status= nach den Mods ;-)
-Prefix= /
