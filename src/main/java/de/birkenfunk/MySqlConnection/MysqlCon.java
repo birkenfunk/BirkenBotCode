@@ -45,7 +45,7 @@ public final class MysqlCon {
         try{
             ReadFile readFile=ReadFile.getReadFile();
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://"+readFile.getDatabase()+"?useSSL=false",readFile.getUsername(),readFile.getPassword());
+            con = DriverManager.getConnection("jdbc:mysql://"+readFile.getDatabase()+"?useSSL=false&serverTimezone=UTC",readFile.getUsername(),readFile.getPassword());
             stmt = con.createStatement();
             running=true;
         }catch (SQLException | ClassNotFoundException e){
