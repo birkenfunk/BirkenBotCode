@@ -1,10 +1,10 @@
-package de.birkenfunk.birkenbotcode.persistent.MySqlConnection;
+package de.birkenfunk.birkenbotcode.persistent;
 
 import java.sql.*;
 import java.util.*;
 
-import de.birkenfunk.birkenbotcode.domain.HelpClasses.Command;
-import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.domain.helper_classes.Command;
+import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -23,22 +23,11 @@ public final class MysqlCon {
     HashMap<String, Integer> commandIDtoName;
 
     /**
-     * Just for testing purpose
-     */
-    /*public static void main(String[] args) {
-        try {
-            mysqlCon.getCommands();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    /**
      * Constructor for MysqlCon
      * Private so it can only be initialised only once
      */
     private MysqlCon() {
-        CommandIDtoName();
+        commandIDtoName();
     }
 
     private void open(){
@@ -102,10 +91,10 @@ public final class MysqlCon {
 
     /**
      * Writes the members of a server to the Database
-     * @param UserID UserID of a User
-     * @param UserName Username of a User
+     * @param userID UserID of a User
+     * @param userName Username of a User
      */
-    public void writeToMember(Long UserID, String UserName) throws Exception {
+    public void writeToMember(Long userID, String userName) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -113,14 +102,14 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("INSERT INTO UserID_UserName (UserID, Username)"+"values(?,?)");
-            preparedStatement.setLong(1,UserID);
-            preparedStatement.setString(2,UserName);
+            preparedStatement.setLong(1,userID);
+            preparedStatement.setString(2,userName);
             preparedStatement.execute();
         }catch (SQLIntegrityConstraintViolationException e){ //In case Entrance already exists it Updates it
             try {
                 preparedStatement = con.prepareStatement("UPDATE UserID_UserName SET Username = ? where UserID = ?");
-                preparedStatement.setLong(2,UserID);
-                preparedStatement.setString(1,UserName);
+                preparedStatement.setLong(2,userID);
+                preparedStatement.setString(1,userName);
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
@@ -180,10 +169,10 @@ public final class MysqlCon {
 
     /**
      * Writes the roles of a server to the Database
-     * @param RoleID ID of the Role
-     * @param RoleName Name of the Role
+     * @param roleID ID of the Role
+     * @param roleName Name of the Role
      */
-    public void writeToRole(Long RoleID, String RoleName) throws Exception {
+    public void writeToRole(Long roleID, String roleName) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -191,14 +180,14 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("INSERT INTO RoleID_RoleName (RoleID, RoleName)"+"values(?,?)");
-            preparedStatement.setLong(1,RoleID);
-            preparedStatement.setString(2,RoleName);
+            preparedStatement.setLong(1,roleID);
+            preparedStatement.setString(2,roleName);
             preparedStatement.execute();
         }catch (SQLIntegrityConstraintViolationException e){//In case Entrance already exists it Updates it
             try {
                 preparedStatement = con.prepareStatement("UPDATE RoleID_RoleName SET RoleName = ? where RoleID = ?");
-                preparedStatement.setLong(2,RoleID);
-                preparedStatement.setString(1,RoleName);
+                preparedStatement.setLong(2,roleID);
+                preparedStatement.setString(1,roleName);
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
@@ -259,10 +248,10 @@ public final class MysqlCon {
 
     /**
      * Puts together the RoleID and the UserID
-     * @param UserID ID of User
-     * @param RoleID ID of corresponding Role
+     * @param userID ID of User
+     * @param roleID ID of corresponding Role
      */
-    public void writeUserID_RoleID(Long UserID, Long RoleID) throws Exception {
+    public void writeUserIDRoleID(Long userID, Long roleID) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -270,8 +259,8 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("INSERT INTO UserID_RoleID (UserID, RoleID)"+"values(?,?)");
-            preparedStatement.setLong(1,UserID);
-            preparedStatement.setLong(2,RoleID);
+            preparedStatement.setLong(1,userID);
+            preparedStatement.setLong(2,roleID);
             preparedStatement.execute();
         }
         catch (SQLException throwable) {
@@ -282,14 +271,14 @@ public final class MysqlCon {
 
     /**
      * For a Large Amount of Data
-     * @param UserIDs List of UserIDs
-     * @param RoleIDs List of RoleIDs
+     * @param userIDs List of UserIDs
+     * @param roleIDs List of RoleIDs
      * @throws Exception if an error occurs during opening
      */
-    public void writeUserID_RoleID(List<Long> UserIDs, List<Long> RoleIDs) throws Exception {
+    public void writeUserIDRoleID(List<Long> userIDs, List<Long> roleIDs) throws Exception {
         StringBuilder statement= new StringBuilder();
         statement.append("INSERT INTO UserID_RoleID (UserID, RoleID) values(?,?) ");
-        for (int i = 1; i < UserIDs.size(); i++) {
+        for (int i = 1; i < userIDs.size(); i++) {
             statement.append(",(?,?)");
         }
         open();
@@ -300,9 +289,9 @@ public final class MysqlCon {
 
             try {
                 preparedStatement = con.prepareStatement(statement.toString());
-                for (int i = 1; !UserIDs.isEmpty()&&!RoleIDs.isEmpty(); i+=2) {
-                    preparedStatement.setLong(i,UserIDs.remove(0));
-                    preparedStatement.setLong(i+1,RoleIDs.remove(0));
+                for (int i = 1; !userIDs.isEmpty()&&!roleIDs.isEmpty(); i+=2) {
+                    preparedStatement.setLong(i,userIDs.remove(0));
+                    preparedStatement.setLong(i+1,roleIDs.remove(0));
                 }
 
                 preparedStatement.execute();
@@ -314,9 +303,9 @@ public final class MysqlCon {
 
     /**
      * Removes the User from the Database
-     * @param UserID Id of the user that should be removed
+     * @param userID Id of the user that should be removed
      */
-    public void removeUserFromDB(Long UserID) throws Exception {
+    public void removeUserFromDB(Long userID) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -324,7 +313,7 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("DELETE FROM UserID_UserName WHERE USERID = ? ");
-            preparedStatement.setLong(1,UserID);
+            preparedStatement.setLong(1,userID);
             preparedStatement.execute();
         }
         catch (SQLException throwable) {
@@ -335,9 +324,9 @@ public final class MysqlCon {
 
     /**
      * Removes the Role from the Database
-     * @param RoleID ID of the Role that should be removed
+     * @param roleID ID of the Role that should be removed
      */
-    public void removeRoleFromDB(Long RoleID) throws Exception {
+    public void removeRoleFromDB(Long roleID) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -345,7 +334,7 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("DELETE FROM RoleID_RoleName WHERE RoleID = ? ");
-            preparedStatement.setLong(1,RoleID);
+            preparedStatement.setLong(1,roleID);
             preparedStatement.execute();
         }
         catch (SQLException throwable) {
@@ -356,10 +345,10 @@ public final class MysqlCon {
 
     /**
      * Removes a User from a specific role
-     * @param UserID ID of the User
-     * @param RoleID ID of the Role
+     * @param userID ID of the User
+     * @param roleID ID of the Role
      */
-    public void removeUserFromRole(Long UserID, Long RoleID) throws Exception {
+    public void removeUserFromRole(Long userID, Long roleID) throws Exception {
         open();
         if(!running){
             throw(new Exception());
@@ -367,8 +356,8 @@ public final class MysqlCon {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = con.prepareStatement("DELETE FROM UserID_RoleID WHERE UserID= ? AND RoleID= ? ");
-            preparedStatement.setLong(1,UserID);
-            preparedStatement.setLong(2,RoleID);
+            preparedStatement.setLong(1,userID);
+            preparedStatement.setLong(2,roleID);
             preparedStatement.execute();
         }
         catch (SQLException throwable) {
@@ -377,7 +366,7 @@ public final class MysqlCon {
         closeCon();
     }
 
-    private void CommandIDtoName(){
+    private void commandIDtoName(){
         open();
         commandIDtoName = new HashMap<>();
         ResultSet res;
@@ -385,9 +374,9 @@ public final class MysqlCon {
             res = stmt.executeQuery("SELECT * FROM Commands");
             while (res.next())
             {
-                int CommandID=res.getInt("CommandID");
-                String Name=res.getString("Name");
-                commandIDtoName.put(Name,CommandID);
+                int commandID=res.getInt("CommandID");
+                String name=res.getString("Name");
+                commandIDtoName.put(name,commandID);
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -406,11 +395,11 @@ public final class MysqlCon {
             ResultSet res = stmt.executeQuery("SELECT * FROM Commands");
             while (res.next())
             {
-                int CommandID=res.getInt("CommandID");
-                String Description=res.getString("Description");
-                String Name=res.getString("Name");
-                boolean ServerCommand=res.getBoolean("ServerCommand");
-                commands.add(new Command(CommandID,Description,Name,ServerCommand));
+                int commandID=res.getInt("CommandID");
+                String description=res.getString("Description");
+                String name=res.getString("Name");
+                boolean serverCommand=res.getBoolean("ServerCommand");
+                commands.add(new Command(commandID,description,name,serverCommand));
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();

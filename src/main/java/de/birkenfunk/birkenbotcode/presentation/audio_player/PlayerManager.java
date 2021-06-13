@@ -1,4 +1,4 @@
-package de.birkenfunk.birkenbotcode.presentation.AudioPlayer;
+package de.birkenfunk.birkenbotcode.presentation.audio_player;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;

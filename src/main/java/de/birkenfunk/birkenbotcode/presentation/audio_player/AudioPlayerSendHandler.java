@@ -1,4 +1,4 @@
-package de.birkenfunk.birkenbotcode.presentation.AudioPlayer;
+package de.birkenfunk.birkenbotcode.presentation.audio_player;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
@@ -31,7 +31,7 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
     @Nullable
     @Override
     public ByteBuffer provide20MsAudio() {
-        ((Buffer) buffer).flip();
+        buffer.flip();
         return buffer;
     }
 

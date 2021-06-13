@@ -1,4 +1,4 @@
-package de.birkenfunk.birkenbotcode.infrastructure.Reader;
+package de.birkenfunk.birkenbotcode.infrastructure.reader;
 
 import java.io.File;
 import java.io.FileWriter;

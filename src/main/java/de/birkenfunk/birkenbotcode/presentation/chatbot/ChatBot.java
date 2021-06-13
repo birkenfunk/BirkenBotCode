@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ChatBot {
     /*todo Documentation*/
-    final private static Map<String, String> answersToQuestions = new HashMap<>();
+    private static final Map<String, String> answersToQuestions = new HashMap<>();
 
     private static String[] tokenizeSentence(String message) throws IOException {
         try (InputStream modelIn = new FileInputStream("./src/de.Birkenfunk.chatbot/models/en-token.bin")) {

@@ -1,9 +1,9 @@
 package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import de.birkenfunk.birkenbotcode.presentation.AudioPlayer.PlayerManager;
-import de.birkenfunk.birkenbotcode.domain.HelpClasses.Command;
-import de.birkenfunk.birkenbotcode.persistent.MySqlConnection.MysqlCon;
-import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.presentation.audio_player.PlayerManager;
+import de.birkenfunk.birkenbotcode.domain.helper_classes.Command;
+import de.birkenfunk.birkenbotcode.persistent.MysqlCon;
+import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
 import de.birkenfunk.birkenbotcode.presentation.activity.ActivityManager;
 import de.birkenfunk.birkenbotcode.domain.enums.Activities;
 import de.birkenfunk.birkenbotcode.presentation.main.DiscordBot;
@@ -52,7 +52,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 					writeMember(con,event,guild);
 				}
 			} catch (Exception e) {
-				Error(event.getChannel());
+				error(event.getChannel());
 			}
 		}
 		if(splittedMessage[0].equalsIgnoreCase(prefix+"help")){//prints out all available Commands
@@ -61,7 +61,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 				con.writeToLog("help",event.getAuthor());
 				commandList = con.getCommands();
 			} catch (Exception e) {
-				Error(event.getChannel());
+				error(event.getChannel());
 			}
 			if(commandList!=null){
 				StringBuilder builder = new StringBuilder();
@@ -86,7 +86,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 
 				return;
 			}
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			for (int i = 1; i < splittedMessage.length; i++) {
 				buffer.append(splittedMessage[i]).append(" ");
 			}
@@ -115,7 +115,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 			if(splittedMessage.length<2){
 				event.getChannel().sendMessage("Please use the Command like this: !volume [0-10]").queue();
 			}
-			Integer temp = Integer.valueOf(splittedMessage[1]);
+			int temp = Integer.parseInt(splittedMessage[1]);
 			PlayerManager.getManager().Volume(temp, event.getMessage());
 		}
 		if(command.equalsIgnoreCase(prefix+"repeat")){
@@ -147,18 +147,18 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		con.writeToRole(roles);
 		List<Member> serverMembers = guild.getMembers();
 		List<Member> members = new LinkedList<>();
-		List<Long> UserIDs = new LinkedList<>();
-		List<Long> RoleIDs = new LinkedList<>();
+		List<Long> userIDs = new LinkedList<>();
+		List<Long> roleIDs = new LinkedList<>();
 		for (Member currentMember : serverMembers) {
 			members.add(currentMember);
 			List<Role> userRole = currentMember.getRoles();
 			for (Role role : userRole) {
-				UserIDs.add(currentMember.getIdLong());
-				RoleIDs.add(role.getIdLong());
+				userIDs.add(currentMember.getIdLong());
+				roleIDs.add(role.getIdLong());
 			}
 		}
 		con.writeToMember(members);
-		con.writeUserID_RoleID(UserIDs, RoleIDs);
+		con.writeUserIDRoleID(userIDs, roleIDs);
 		event.getChannel().sendMessage(serverMembers.size() + " have been recognised. If there are more members on your Server try again.").queue();
 	}
 
@@ -171,13 +171,11 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		String message = event.getMessage().getContentDisplay();
 		String authorName = event.getAuthor().toString();
 		String[] splittedMessage = message.split(" ");
-		String content;
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuilder stringBuffer = new StringBuilder();
 
 		for (int i= 1;splittedMessage.length-1<i;i++)
 			stringBuffer.append(splittedMessage[i]).append(" ");
 		stringBuffer.append(splittedMessage[splittedMessage.length-1]);
-		content=stringBuffer.toString();
 
 		if(message.isEmpty() || isBirkenBot(authorName)||message.charAt(0) != prefix) {
 			return;
@@ -206,7 +204,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 					ActivityManager.setActivity(Activities.LISTENING, event);
 				}
 			} catch (Exception e) {
-				Error(event.getChannel());
+				error(event.getChannel());
 				e.printStackTrace();
 			}
 		}
@@ -215,7 +213,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		}
 	}
 
-	private void Error(MessageChannel channel){
+	private void error(MessageChannel channel){
 		channel.sendMessage("MySql Connection went wrong please contact the Developer on birkenfunk@outlook.de").queue();
 	}
 }

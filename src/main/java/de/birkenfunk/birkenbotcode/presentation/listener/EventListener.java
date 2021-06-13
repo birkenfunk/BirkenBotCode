@@ -1,6 +1,6 @@
 package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import de.birkenfunk.birkenbotcode.persistent.MySqlConnection.MysqlCon;
+import de.birkenfunk.birkenbotcode.persistent.MysqlCon;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.role.RoleCreateEvent;
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
  * @version 1.5
  */
 public class EventListener extends ListenerAdapter {
+    private static final Logger LOGGER = LogManager.getLogger(EventListener.class);
     /* todo Documentation */
 
     private final MysqlCon con = MysqlCon.getMysqlCon();
@@ -28,7 +31,7 @@ public class EventListener extends ListenerAdapter {
         try {
             con.writeToMember(event.getMember().getIdLong(),event.getMember().getUser().getName());
         } catch (Exception e) {
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -37,7 +40,7 @@ public class EventListener extends ListenerAdapter {
         try {
             con.removeUserFromDB(event.getUser().getIdLong());
         } catch (Exception e) {
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -46,10 +49,10 @@ public class EventListener extends ListenerAdapter {
         List<Role> roleList=event.getRoles();
         try {
         for (Role role : roleList) {
-                con.writeUserID_RoleID(event.getMember().getIdLong(), role.getIdLong());
+                con.writeUserIDRoleID(event.getMember().getIdLong(), role.getIdLong());
         }
         } catch (Exception e) {
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
 
     }
@@ -62,7 +65,7 @@ public class EventListener extends ListenerAdapter {
                 con.removeUserFromRole(event.getMember().getIdLong(), role.getIdLong());
             }
         }catch (Exception e){
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -71,7 +74,7 @@ public class EventListener extends ListenerAdapter {
         try {
             con.writeToRole(event.getRole().getIdLong(),event.getRole().getName());
         } catch (Exception e) {
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -80,7 +83,7 @@ public class EventListener extends ListenerAdapter {
         try {
             con.removeRoleFromDB(event.getRole().getIdLong());
         } catch (Exception e) {
-            System.err.println("MySql Connection went wrong");
+            LOGGER.error(e.getMessage());
         }
     }
 }

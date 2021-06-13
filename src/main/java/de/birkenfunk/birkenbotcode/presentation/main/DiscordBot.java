@@ -1,6 +1,6 @@
 package de.birkenfunk.birkenbotcode.presentation.main;
 
-import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
 import de.birkenfunk.birkenbotcode.presentation.listener.EventListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.MessageListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.ReactionListener;
@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
@@ -21,6 +23,7 @@ import java.io.InputStreamReader;
  * @version 1.4
  */
 public class DiscordBot {
+	private static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
 	private final JDA shardman;
 	private static DiscordBot discordBot;
 	private final Shutdown s1;
@@ -43,7 +46,7 @@ public class DiscordBot {
 		builder.setActivity(Activity.watching(readFile.getStatus()));
 		builder.addEventListeners(new MessageListener(),new ReactionListener(), new EventListener());
 		shardman= builder.build();
-		System.out.println("Bot online");
+		LOGGER.info("Bot online");
 
 		s1=new Shutdown();
 		Thread t1= new Thread(s1);
@@ -69,11 +72,11 @@ public class DiscordBot {
 					if(line.equalsIgnoreCase("exit"))
 					{
 						shardman.shutdown();
-						System.out.println("Bot offline");
+						LOGGER.info("Bot offline");
 						reader.close();
 						System.exit(0);
 					}else {
-						System.out.println("Use 'exit' to shutdown");
+						LOGGER.info("Use 'exit' to shutdown");
 					}
 
 				}
@@ -86,7 +89,7 @@ public class DiscordBot {
 		 * To stop the Thread from outside and also stop the Bot
 		 */
 		public void stop(){
-			System.out.println("Bot offline");
+			LOGGER.info("Bot offline");
 			System.exit(0);
 		}
 	}

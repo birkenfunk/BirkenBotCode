@@ -1,6 +1,6 @@
 package de.birkenfunk.birkenbotcode.application.mixins;
 
-import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
 
 public interface CommandFormatMixins {
     /*todo Documentation*/
