@@ -25,13 +25,13 @@ public final class MysqlCon {
     /**
      * Just for testing purpose
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         try {
             mysqlCon.getCommands();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * Constructor for MysqlCon
