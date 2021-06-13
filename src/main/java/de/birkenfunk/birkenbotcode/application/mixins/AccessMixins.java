@@ -1,4 +1,4 @@
-package de.birkenfunk.mixins;
+package de.birkenfunk.birkenbotcode.application.mixins;
 
 public interface AccessMixins {
     /*todo Documentation*/

@@ -1,4 +1,4 @@
-package de.birkenfunk.chatbot;
+package de.birkenfunk.birkenbotcode.presentation.chatbot;
 
 import opennlp.tools.doccat.*;
 import opennlp.tools.lemmatizer.LemmatizerME;

@@ -1,4 +1,4 @@
-package de.birkenfunk.listener;
+package de.birkenfunk.birkenbotcode.presentation.listener;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;

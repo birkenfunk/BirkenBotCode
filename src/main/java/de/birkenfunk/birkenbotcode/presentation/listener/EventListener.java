@@ -1,6 +1,6 @@
-package de.birkenfunk.listener;
+package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import de.birkenfunk.MySqlConnection.MysqlCon;
+import de.birkenfunk.birkenbotcode.persistent.MySqlConnection.MysqlCon;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;

@@ -1,6 +1,6 @@
-package de.birkenfunk.activity;
+package de.birkenfunk.birkenbotcode.presentation.activity;
 
-import de.birkenfunk.enums.Activities;
+import de.birkenfunk.birkenbotcode.domain.enums.Activities;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 

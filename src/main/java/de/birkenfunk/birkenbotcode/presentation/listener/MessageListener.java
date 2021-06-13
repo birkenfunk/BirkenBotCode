@@ -1,14 +1,14 @@
-package de.birkenfunk.listener;
+package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import de.birkenfunk.AudioPlayer.PlayerManager;
-import de.birkenfunk.HelpClasses.Command;
-import de.birkenfunk.MySqlConnection.MysqlCon;
-import de.birkenfunk.Reader.ReadFile;
-import de.birkenfunk.activity.ActivityManager;
-import de.birkenfunk.enums.Activities;
-import de.birkenfunk.main.DiscordBot;
-import de.birkenfunk.mixins.AccessMixins;
-import de.birkenfunk.mixins.CommandFormatMixins;
+import de.birkenfunk.birkenbotcode.presentation.AudioPlayer.PlayerManager;
+import de.birkenfunk.birkenbotcode.domain.HelpClasses.Command;
+import de.birkenfunk.birkenbotcode.persistent.MySqlConnection.MysqlCon;
+import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.presentation.activity.ActivityManager;
+import de.birkenfunk.birkenbotcode.domain.enums.Activities;
+import de.birkenfunk.birkenbotcode.presentation.main.DiscordBot;
+import de.birkenfunk.birkenbotcode.application.mixins.AccessMixins;
+import de.birkenfunk.birkenbotcode.application.mixins.CommandFormatMixins;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;

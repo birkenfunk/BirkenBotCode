@@ -1,10 +1,10 @@
-package de.birkenfunk.MySqlConnection;
+package de.birkenfunk.birkenbotcode.persistent.MySqlConnection;
 
 import java.sql.*;
 import java.util.*;
 
-import de.birkenfunk.HelpClasses.Command;
-import de.birkenfunk.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.domain.HelpClasses.Command;
+import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;

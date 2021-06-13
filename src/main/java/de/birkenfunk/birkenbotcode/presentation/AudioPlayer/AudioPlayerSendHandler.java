@@ -1,4 +1,4 @@
-package de.birkenfunk.AudioPlayer;
+package de.birkenfunk.birkenbotcode.presentation.AudioPlayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;

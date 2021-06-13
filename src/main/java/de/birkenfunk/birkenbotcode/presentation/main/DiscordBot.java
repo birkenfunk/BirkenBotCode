@@ -1,9 +1,9 @@
-package de.birkenfunk.main;
+package de.birkenfunk.birkenbotcode.presentation.main;
 
-import de.birkenfunk.Reader.ReadFile;
-import de.birkenfunk.listener.EventListener;
-import de.birkenfunk.listener.MessageListener;
-import de.birkenfunk.listener.ReactionListener;
+import de.birkenfunk.birkenbotcode.infrastructure.Reader.ReadFile;
+import de.birkenfunk.birkenbotcode.presentation.listener.EventListener;
+import de.birkenfunk.birkenbotcode.presentation.listener.MessageListener;
+import de.birkenfunk.birkenbotcode.presentation.listener.ReactionListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;

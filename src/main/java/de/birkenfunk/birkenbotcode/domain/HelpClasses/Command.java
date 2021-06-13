@@ -1,4 +1,4 @@
-package de.birkenfunk.HelpClasses;
+package de.birkenfunk.birkenbotcode.domain.HelpClasses;
 
 public class Command {
     private int CommandID;
