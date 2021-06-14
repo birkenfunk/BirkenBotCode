@@ -13,12 +13,12 @@ import java.util.Scanner;
 public class ReadFile {
 
     private static ReadFile readFile;
-    private String Username;
-    private String Password;
-    private String Token;
-    private String Database;
-    private String Status;
-    private char Prefix;
+    private String username;
+    private String password;
+    private String token;
+    private String database;
+    private String status;
+    private char prefix;
 
     /**
      * Creates a new {@link ReadFile}
@@ -81,17 +81,17 @@ public class ReadFile {
             System.exit(0);
         }
         if(strings[0].equalsIgnoreCase("Username"))
-            Username= strings[1];
+            username = strings[1];
         if(strings[0].equalsIgnoreCase("Password"))
-            Password= strings[1];
+            password = strings[1];
         if(strings[0].equalsIgnoreCase("Database"))
-            Database= strings[1];
+            database = strings[1];
         if(strings[0].equalsIgnoreCase("Token"))
-            Token= strings[1];
+            token = strings[1];
         if(strings[0].equalsIgnoreCase("Status"))
-            Status= strings[1];
+            status = strings[1];
         if(strings[0].equalsIgnoreCase("Prefix"))
-            Prefix= strings[1].charAt(0);
+            prefix = strings[1].charAt(0);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ReadFile {
      * @return the username
      */
     public String getUsername() {
-        return Username;
+        return username;
     }
 
     /**
@@ -107,14 +107,14 @@ public class ReadFile {
      * @return the password
      */
     public String getPassword() {
-        return Password;
+        return password;
     }
     /**
      * Return the token for the Bot
      * @return the token
      */
     public String getToken() {
-        return Token;
+        return token;
     }
 
     /**
@@ -122,7 +122,7 @@ public class ReadFile {
      * @return the Link
      */
     public String getDatabase() {
-        return Database;
+        return database;
     }
 
     /**
@@ -130,7 +130,7 @@ public class ReadFile {
      * @return the status
      */
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     /**
@@ -138,7 +138,7 @@ public class ReadFile {
      * @return the Prefix
      */
     public char getPrefix() {
-        return Prefix;
+        return prefix;
     }
 
     /**
