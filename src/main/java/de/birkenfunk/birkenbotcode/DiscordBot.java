@@ -1,4 +1,4 @@
-package de.birkenfunk.birkenbotcode.presentation.main;
+package de.birkenfunk.birkenbotcode;
 
 import de.birkenfunk.birkenbotcode.application.IDatabase;
 import de.birkenfunk.birkenbotcode.common.Config;
@@ -19,8 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import javax.security.auth.login.LoginException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 
 /**
  * Main class which starts the Discord Bot
@@ -30,14 +29,17 @@ import java.io.InputStreamReader;
 @SpringBootApplication(scanBasePackages = {"de.birkenfunk.birkenbotcode"})
 public class DiscordBot {
 	private static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
-	private JDA shardman;
-	private Shutdown s1;
+	private static JDA shardman;
 
 	@Autowired
 	private IDatabase database;
 
 	public static void main(String[] args)  {
 		SpringApplication.run(DiscordBot.class, args);
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			LOGGER.info("Shutdown");
+			shardman.shutdown();
+		}));
 	}
 
 
@@ -52,58 +54,5 @@ public class DiscordBot {
 		shardman= builder.build();
 		LOGGER.info("Bot online");
 
-		s1=new Shutdown();
-		Thread t1= new Thread(s1);
-		t1.start();
-	}
-
-	/**
-	 * Class listens to messages via command line
-	 * to shut down the Bot
-	 * @author Alexander Asbeck
-	 * @version 2.0
-	 */
-	class Shutdown implements Runnable{
-
-		@Override
-		public void run() {
-			String line;
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			try {
-				while ((line=reader.readLine())!=null) {
-
-					if(line.equalsIgnoreCase("exit"))
-					{
-						shardman.shutdown();
-						LOGGER.info("Bot offline");
-						reader.close();
-						System.exit(0);
-					}else {
-						LOGGER.info("Use 'exit' to shutdown");
-					}
-
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		/**
-		 * To stop the Thread from outside and also stop the Bot
-		 */
-		public void stop(){
-			LOGGER.info("Bot offline");
-			System.exit(0);
-		}
-	}
-
-
-
-	/**
-	 * Stops the Thread
-	 */
-	public void stopThreadListener(){
-		s1.stop();
 	}
 }
