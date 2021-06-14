@@ -1,6 +1,7 @@
 package de.birkenfunk.birkenbotcode.application;
 
 import de.birkenfunk.birkenbotcode.domain.*;
+import de.birkenfunk.birkenbotcode.persistent.entity.ReactionRoleID;
 
 import java.util.List;
 
@@ -8,17 +9,23 @@ public interface IDatabase {
 
     void saveRole(RoleDTO role);
 
-    RoleDTO getRole(int id);
+    void removeRole(long id);
+
+    RoleDTO getRole(long id);
 
     List<RoleDTO> getRoles();
 
     void saveUser(UserDTO user);
 
-    UserDTO getUser(int id);
+    void removeUser(long id);
+
+    UserDTO getUser(long id);
 
     List<UserDTO> getUsers();
 
     void saveCommand(CommandDTO command);
+
+    void removeCommand(int id);
 
     CommandDTO getCommand(int id);
 
@@ -26,17 +33,21 @@ public interface IDatabase {
 
     void saveReactionRole(ReactionRoleDTO reactionRole);
 
-    ReactionRoleDTO getReactionRole(int reactionID);
+    void removeReactionRole(ReactionRoleID id);
+
+    ReactionRoleDTO getReactionRole(ReactionRoleID reactionID);
 
     List<ReactionRoleDTO> getReactionRoles();
 
     void addLog(LogDTO log);
 
-    void addUserToRole(int userID, int roleID);
+    void addUserToRole(long userID, long roleID, long serverID);
 
-    List<RoleToNameDTO> getRolesToName(int nameID);
+    void removeUserFromRole(long userID, long roleID, long serverID)
 
-    List<RoleToNameDTO> getNamesToRole(int roleID);
+    List<RoleToNameDTO> getRolesToName(long nameID);
+
+    List<RoleToNameDTO> getNamesToRole(long roleID);
 
     List<RoleToNameDTO> getAllNamesToRoles();
 
