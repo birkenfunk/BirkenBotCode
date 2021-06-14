@@ -8,16 +8,16 @@ import javax.persistence.Id;
 @Entity
 public class Role {
 
-    private int roleID;
+    private long roleID;
     private String name;
 
     @Id
     @Column(name = "RoleID", updatable = false, nullable = false)
-    public int getRoleID() {
+    public long getRoleID() {
         return roleID;
     }
 
-    public void setRoleID(int roleID) {
+    public void setRoleID(long roleID) {
         this.roleID = roleID;
     }
 
