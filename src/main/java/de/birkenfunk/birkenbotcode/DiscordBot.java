@@ -1,6 +1,7 @@
 package de.birkenfunk.birkenbotcode.presentation.main;
 
-import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
+import de.birkenfunk.birkenbotcode.application.IDatabase;
+import de.birkenfunk.birkenbotcode.common.Config;
 import de.birkenfunk.birkenbotcode.presentation.listener.EventListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.MessageListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.ReactionListener;
@@ -12,6 +13,10 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
@@ -22,28 +27,27 @@ import java.io.InputStreamReader;
  * @author Alexander Asbeck
  * @version 1.4
  */
+@SpringBootApplication(scanBasePackages = {"de.birkenfunk.birkenbotcode"})
 public class DiscordBot {
 	private static final Logger LOGGER = LogManager.getLogger(DiscordBot.class);
-	private final JDA shardman;
-	private static DiscordBot discordBot;
-	private final Shutdown s1;
+	private JDA shardman;
+	private Shutdown s1;
+
+	@Autowired
+	private IDatabase database;
 
 	public static void main(String[] args)  {
-		try {
-			discordBot= new DiscordBot();
-		} catch (LoginException | IllegalArgumentException e) {
-			e.printStackTrace();
-		}
-
+		SpringApplication.run(DiscordBot.class, args);
 	}
-	
-	public DiscordBot() throws LoginException, IllegalArgumentException{
-		ReadFile readFile= ReadFile.getReadFile();
-		JDABuilder builder = JDABuilder.createDefault(readFile.getToken());
+
+
+	@Bean
+	void startBot() throws LoginException {
+		JDABuilder builder = JDABuilder.createDefault(Config.getConfig().getToken());
 		builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
 		builder.setMemberCachePolicy(MemberCachePolicy.ALL);
 		builder.setStatus(OnlineStatus.ONLINE);
-		builder.setActivity(Activity.watching(readFile.getStatus()));
+		builder.setActivity(Activity.watching(Config.getConfig().getStatus()));
 		builder.addEventListeners(new MessageListener(),new ReactionListener(), new EventListener());
 		shardman= builder.build();
 		LOGGER.info("Bot online");
@@ -94,13 +98,7 @@ public class DiscordBot {
 		}
 	}
 
-	/**
-	 * Returns an instance of the Bot
-	 * @return instance of Bot
-	 */
-	public static DiscordBot getDiscordBot() {
-		return discordBot;
-	}
+
 
 	/**
 	 * Stops the Thread
