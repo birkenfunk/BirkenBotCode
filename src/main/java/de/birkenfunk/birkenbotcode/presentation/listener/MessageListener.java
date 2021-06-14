@@ -2,11 +2,8 @@ package de.birkenfunk.birkenbotcode.presentation.listener;
 
 import de.birkenfunk.birkenbotcode.presentation.audio_player.PlayerManager;
 import de.birkenfunk.birkenbotcode.domain.helper_classes.Command;
-import de.birkenfunk.birkenbotcode.persistent.MysqlCon;
-import de.birkenfunk.birkenbotcode.infrastructure.reader.ReadFile;
 import de.birkenfunk.birkenbotcode.presentation.activity.ActivityManager;
 import de.birkenfunk.birkenbotcode.domain.enums.Activities;
-import de.birkenfunk.birkenbotcode.presentation.main.DiscordBot;
 import de.birkenfunk.birkenbotcode.application.mixins.AccessMixins;
 import de.birkenfunk.birkenbotcode.application.mixins.CommandFormatMixins;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -28,7 +25,7 @@ import java.util.Objects;
  */
 public class MessageListener extends ListenerAdapter implements AccessMixins, CommandFormatMixins {
 
-	private final char prefix = ReadFile.getReadFile().getPrefix();
+	private final char prefix = '/';
 
 	/**
 	 * Reacts to a Message on a Server
@@ -39,7 +36,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		String message = event.getMessage().getContentDisplay();
 		if(message.isEmpty()||message.charAt(0) != prefix||event.getAuthor().isBot())
 			return;
-		MysqlCon con= MysqlCon.getMysqlCon();
+		//MysqlCon con= MysqlCon.getMysqlCon();
 		Guild guild = event.getGuild();
 		String[] splittedMessage = message.split(" ");
 		String command = splittedMessage[0];
@@ -49,7 +46,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 					event.getChannel().sendMessage("Work in Progress").queue();
 				}
 				if(command.equalsIgnoreCase(prefix+"write-member")){ //Puts all Members of a Server into a Database
-					writeMember(con,event,guild);
+					//writeMember(con,event,guild);
 				}
 			} catch (Exception e) {
 				error(event.getChannel());
@@ -58,8 +55,8 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		if(splittedMessage[0].equalsIgnoreCase(prefix+"help")){//prints out all available Commands
 			List<Command> commandList= null;
 			try {
-				con.writeToLog("help",event.getAuthor());
-				commandList = con.getCommands();
+				//con.writeToLog("help",event.getAuthor());
+				//commandList = con.getCommands();
 			} catch (Exception e) {
 				error(event.getChannel());
 			}
@@ -134,13 +131,12 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 
 	/**
 	 * Writes Roles and Members to Database
-	 * @param con MySQL connection
 	 * @param event {@link GuildMessageReceivedEvent}
 	 * @param guild {@link Guild}
 	 * @throws Exception If an Error with the MySQL Database happens
 	 */
-	private void writeMember(MysqlCon con, GuildMessageReceivedEvent event,Guild guild) throws Exception {
-		con.writeToLog("write-member", Objects.requireNonNull(event.getMember()).getUser());
+	private void writeMember(GuildMessageReceivedEvent event,Guild guild) throws Exception {
+		/*con.writeToLog("write-member", Objects.requireNonNull(event.getMember()).getUser());
 		guild.loadMembers();
 		List<Role> serverRoles = guild.getRoles();
 		List<Role> roles = new LinkedList<>(serverRoles);
@@ -160,7 +156,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		con.writeToMember(members);
 		con.writeUserIDRoleID(userIDs, roleIDs);
 		event.getChannel().sendMessage(serverMembers.size() + " have been recognised. If there are more members on your Server try again.").queue();
-	}
+	*/}
 
 	/**
 	 * Reacts to a Message in a Privat Chat
@@ -183,13 +179,13 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 
 		if (hasAdminAccess(authorName)) {
 			String command = message.split(" ")[0];
-			try {
+			/*try {
 				if(command.equalsIgnoreCase(prefix+"exit")) {//Closes the Bot
 					MysqlCon.getMysqlCon().writeToLog("exit", event.getAuthor());
 					event.getChannel().sendMessage("Bot Shutdown").queue();
 					event.getJDA().getPresence().setStatus(OnlineStatus.OFFLINE);
 					event.getJDA().shutdown();
-					DiscordBot.getDiscordBot().stopThreadListener();
+					//DiscordBot.getDiscordBot().stopThreadListener();
 				}
 				if(command.equalsIgnoreCase(prefix+"play")) {//Changes Activity of Bot
 					MysqlCon.getMysqlCon().writeToLog("play", event.getAuthor());
@@ -206,7 +202,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 			} catch (Exception e) {
 				error(event.getChannel());
 				e.printStackTrace();
-			}
+			}*/
 		}
 		if (isChat(message)) {//temporary disabled due to no development at the moment
 			//event.getChannel().sendMessage(ChatBot.getResponse(message)).queue();
