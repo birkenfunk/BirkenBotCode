@@ -43,7 +43,7 @@ public interface IDatabase {
 
     void addUserToRole(long userID, long roleID, long serverID);
 
-    void removeUserFromRole(long userID, long roleID, long serverID)
+    void removeUserFromRole(long userID, long roleID, long serverID);
 
     List<RoleToNameDTO> getRolesToName(long nameID);
 
