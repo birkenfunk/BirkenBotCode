@@ -1,8 +1,5 @@
 package de.birkenfunk.birkenbotcode.domain;
 
-import de.birkenfunk.birkenbotcode.persistent.entity.Command;
-import de.birkenfunk.birkenbotcode.persistent.entity.User;
-
 import java.sql.Timestamp;
 
 public class LogDTO {

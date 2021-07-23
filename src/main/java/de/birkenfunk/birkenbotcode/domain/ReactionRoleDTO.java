@@ -1,7 +1,5 @@
 package de.birkenfunk.birkenbotcode.domain;
 
-import de.birkenfunk.birkenbotcode.persistent.entity.Role;
-
 public class ReactionRoleDTO {
 
     private String emojiID;

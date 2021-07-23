@@ -1,8 +1,5 @@
 package de.birkenfunk.birkenbotcode.domain;
 
-import de.birkenfunk.birkenbotcode.persistent.entity.Role;
-import de.birkenfunk.birkenbotcode.persistent.entity.User;
-
 public class RoleToNameDTO {
 
     private RoleDTO role;

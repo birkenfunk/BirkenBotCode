@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class MySqlConnector implements IDatabase {
+public class SqlConnector implements IDatabase {
 
     @Autowired
     private CommandRepo commandRepo;
