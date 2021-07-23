@@ -2,9 +2,11 @@ package de.birkenfunk.birkenbotcode;
 
 import de.birkenfunk.birkenbotcode.application.IDatabase;
 import de.birkenfunk.birkenbotcode.common.Config;
+import de.birkenfunk.birkenbotcode.domain.CommandDTO;
 import de.birkenfunk.birkenbotcode.presentation.listener.EventListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.MessageListener;
 import de.birkenfunk.birkenbotcode.presentation.listener.ReactionListener;
+import de.birkenfunk.birkenbotcode.presentation.listener.SlashCommandListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -19,7 +21,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 
 /**
  * Main class which starts the Discord Bot
@@ -50,8 +51,17 @@ public class DiscordBot {
 		builder.setMemberCachePolicy(MemberCachePolicy.ALL);
 		builder.setStatus(OnlineStatus.ONLINE);
 		builder.setActivity(Activity.watching(Config.getConfig().getStatus()));
-		builder.addEventListeners(new MessageListener(),new ReactionListener(), new EventListener());
+		builder.addEventListeners(
+				new MessageListener(),
+				new ReactionListener(), 
+				new EventListener(), 
+				new SlashCommandListener());
 		shardman= builder.build();
+		for (CommandDTO command : database.getCommands()) {
+			if (command.isServerCommand()) {
+				shardman.upsertCommand(command.getName(), command.getDescription()).queue();
+			}
+		}
 		LOGGER.info("Bot online");
 
 	}
