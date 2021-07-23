@@ -7,6 +7,7 @@ public class Command {
     private int id;
     private String name;
     private String description;
+    private boolean serverCommand;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +39,14 @@ public class Command {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    @Basic
+    @Column(name = "Server", nullable = false)
+    public boolean isServerCommand() {
+    	return serverCommand;
+    }
+    
+    public void setServerCommand(boolean isServerCommand) {
+		serverCommand = isServerCommand;
+	}
 }

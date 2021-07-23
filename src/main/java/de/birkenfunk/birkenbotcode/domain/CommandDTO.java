@@ -5,6 +5,7 @@ public class CommandDTO {
     private int id;
     private String name;
     private String description;
+    private boolean serverCommand;
 
     public int getId() {
         return id;
@@ -29,4 +30,12 @@ public class CommandDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public boolean isServerCommand() {
+		return serverCommand;
+	}
+
+	public void setServerCommand(boolean serverCommand) {
+		this.serverCommand = serverCommand;
+	}
 }

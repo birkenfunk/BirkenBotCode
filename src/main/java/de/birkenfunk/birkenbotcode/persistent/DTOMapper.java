@@ -14,6 +14,7 @@ public class DTOMapper {
         commandDTO.setDescription(command.getDescription());
         commandDTO.setId(command.getId());
         commandDTO.setName(command.getName());
+        commandDTO.setServerCommand(command.isServerCommand());
         return commandDTO;
     };
 
@@ -22,6 +23,7 @@ public class DTOMapper {
         command.setDescription(command.getDescription());
         command.setId(command.getId());
         command.setName(command.getName());
+        command.setServerCommand(command.isServerCommand());
         return command;
     };
 
