@@ -7,9 +7,13 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+
+import de.birkenfunk.birkenbotcode.presentation.Message;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite.Channel;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.HashMap;
@@ -28,8 +32,14 @@ public class PlayerManager {
         AudioSourceManagers.registerLocalSource(playerManager);
     }
 
+    
+    /**
+     * Adds a new {@link GuildMusicManager} to the musicManagers map if it doesn't exists
+     * @param guild {@link Guild} where to play music
+     * @return {@link GuildMusicManager} form the musicManagers map
+     */
     private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
-        long guildId = Long.parseLong(guild.getId());
+        long guildId = guild.getIdLong();
         GuildMusicManager musicManager = musicManagers.get(guildId);
 
         if (musicManager == null) {
@@ -43,20 +53,34 @@ public class PlayerManager {
         return musicManager;
     }
 
-    public void loadAndPlay(Message message, String trackUrl){
-        TextChannel channel = message.getTextChannel();
+    /**
+     * Adds a new track to the queue
+     * @param channel
+     * @param member
+     * @param trackUrl
+     */
+    public void loadAndPlay(Message message){
         Guild guild = message.getGuild();
+        Member member = message.getMember();
+        TextChannel channel = message.getChannel();
         GuildMusicManager musicManager = getGuildAudioPlayer(guild);
-        if(guild.getAudioManager().isConnected() && guild.getAudioManager().getConnectedChannel()!= Objects.requireNonNull(Objects.requireNonNull(message.getMember()).getVoiceState()).getChannel()){
-            channel.sendMessage("You are not in the Same Channel as the Bot");
-            return;
+        
+        if(!member.getVoiceState().inVoiceChannel()) {//if not in a channel
+        	channel.sendMessage(member.getAsMention() + " you have to be in a voice channel").queue();
+        	return;
         }
-        playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+        
+        if(!isInSameChannel(message.getMember())&&!isNotConnected(guild)) {//already connected but not in same channel
+			sendSameChannel(channel);
+			return;
+		}
+        
+        playerManager.loadItemOrdered(musicManager, message.getContent(), new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 channel.sendMessage("Adding to queue: " + track.getInfo().title).queue();
 
-                play(guild, musicManager, track, message.getMember());
+                play(guild, musicManager, track, member);
             }
 
             @Override
@@ -67,12 +91,12 @@ public class PlayerManager {
 
                 channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
                 
-                play(guild, musicManager, firstTrack, message.getMember());
+                play(guild, musicManager, firstTrack, member);
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage("Nothing found by " + trackUrl).queue();
+                channel.sendMessage("Nothing found by " + message.getContent()).queue();
             }
 
             @Override
@@ -83,12 +107,12 @@ public class PlayerManager {
     }
 
     public void skipTrack(Message message){
-        if(isNotConnected(message))
+        if(isNotConnected(message.getGuild()))
             return;
         if(message.getGuild().getAudioManager().getConnectedChannel()!=message.getMember().getVoiceState().getChannel()){
-            message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
+        	message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
         }
-        GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
+        GuildMusicManager musicManager = getGuildAudioPlayer(message.getChannel().getGuild());
         musicManager.getScheduler().nextTrack();
         message.getChannel().sendMessage("Skipped to next track.").queue();
     }
@@ -98,7 +122,7 @@ public class PlayerManager {
      * @param message
      */
     public void pauseTrack(Message message){
-        if(isNotConnected(message))
+        if(isNotConnected(message.getGuild()))
             return;
         if(message.getGuild().getAudioManager().getConnectedChannel()!=message.getMember().getVoiceState().getChannel()){
             message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
@@ -117,12 +141,13 @@ public class PlayerManager {
      *
      * @param message
      */
-    public void UnPauseTrack(Message message){
-        if(isNotConnected(message))
-            return;
-        if(message.getGuild().getAudioManager().getConnectedChannel()!=message.getMember().getVoiceState().getChannel()){
-            message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
-        }
+    public void play(Message message){
+        if(message.getContent()!=null)
+            loadAndPlay(message);
+        if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         musicManager.getPlayer().setPaused(false);
         message.getChannel().sendMessage("Unpaused Player").queue();
@@ -133,12 +158,13 @@ public class PlayerManager {
      * @param message
      * @param repeat1
      */
-    public void Repeat(Message message, Boolean repeat1){
-        if(isNotConnected(message))
+    public void repeat(Message message, Boolean repeat1){
+        if(isNotConnected(message.getGuild()))
             return;
-        if(message.getGuild().getAudioManager().getConnectedChannel()!=message.getMember().getVoiceState().getChannel()){
-            message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
-        }
+        if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         TrackScheduler trackScheduler = musicManager.getScheduler();
         if (repeat1){
@@ -161,29 +187,42 @@ public class PlayerManager {
         }
     }
 
-    public void Volume(int volume, Message message){
-        if(isNotConnected(message))
+    public void volume(int volume, Message message){
+        if(isNotConnected(message.getGuild()))
             return;
-        if(message.getGuild().getAudioManager().getConnectedChannel()!=message.getMember().getVoiceState().getChannel()){
-            message.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
-        }
+        if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         musicManager.getPlayer().setVolume(volume);
         message.getChannel().sendMessage("Set Volume to "+volume+"%").queue();
     }
 
-    public void Stop(Message message){
+    public void stop(Message message){
+    	if(isNotConnected(message.getGuild()))
+            return;
+    	if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         musicManager.getScheduler().stop();
     }
 
-    public void Clear(Message message){
+    public void clear(Message message){
+    	if(isNotConnected(message.getGuild()))
+            return;
+    	if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         musicManager.getScheduler().clear();
         message.getChannel().sendMessage("Queue has been cleared").queue();
     }
 
-    public void Shuffle(Message message){
+    public void shuffle(Message message){
         GuildMusicManager musicManager = getGuildAudioPlayer(message.getGuild());
         musicManager.getScheduler().shuffle();
         message.getChannel().sendMessage("Queue has been shuffled").queue();
@@ -195,10 +234,8 @@ public class PlayerManager {
         musicManager.getScheduler().queue(track);
     }
 
-    private boolean isNotConnected(Message message){
-        if(!message.getGuild().getAudioManager().isConnected())
-            message.getChannel().sendMessage("Bot is not Connected");
-        return !message.getGuild().getAudioManager().isConnected();
+    private boolean isNotConnected(Guild guild){
+        return !guild.getAudioManager().isConnected();
     }
 
     public static PlayerManager getManager() {
@@ -206,4 +243,32 @@ public class PlayerManager {
             manager=new PlayerManager();
         return manager;
     }
+
+
+	public void leave(Message message) {
+		if(isNotConnected(message.getGuild()))
+            return;
+		if(!(message.getMember().hasPermission(Permission.KICK_MEMBERS)||isInSameChannel(message.getMember()))) {
+			sendSameChannel(message.getChannel());
+			return;
+		}
+		stop(message);
+		message.getGuild().getAudioManager().closeAudioConnection();
+		message.getChannel().sendMessage("Disconnected");
+		musicManagers.remove(message.getGuild().getIdLong());
+	}
+	
+	private boolean isInSameChannel(Member member) {
+		if(!member.getVoiceState().inVoiceChannel())//Client not connected
+			return false;
+		if(isNotConnected(member.getGuild()))//Bot not connected
+			return false;
+		if (member.getVoiceState().getChannel()!=member.getGuild().getAudioManager().getConnectedChannel()) //Not in same channel
+			return false;
+		return true;
+	}
+	
+	private void sendSameChannel(TextChannel cannel) {
+		cannel.sendMessage("You have to be in the same Channel as the Bot").queue();
+	}
 }
