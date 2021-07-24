@@ -292,3 +292,7 @@ gradle-app.setting
 
 logs/
 /Login.txt
+.gitsecret/keys/random_seed
+!*.secret
+application.properties
+Bot.properties

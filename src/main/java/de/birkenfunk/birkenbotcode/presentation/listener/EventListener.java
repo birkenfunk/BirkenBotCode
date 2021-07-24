@@ -1,6 +1,5 @@
 package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import de.birkenfunk.birkenbotcode.persistent.MysqlCon;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
@@ -24,12 +23,12 @@ public class EventListener extends ListenerAdapter {
     private static final Logger LOGGER = LogManager.getLogger(EventListener.class);
     /* todo Documentation */
 
-    private final MysqlCon con = MysqlCon.getMysqlCon();
+
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         try {
-            con.writeToMember(event.getMember().getIdLong(),event.getMember().getUser().getName());
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -38,7 +37,7 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
         try {
-            con.removeUserFromDB(event.getUser().getIdLong());
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -49,7 +48,7 @@ public class EventListener extends ListenerAdapter {
         List<Role> roleList=event.getRoles();
         try {
         for (Role role : roleList) {
-                con.writeUserIDRoleID(event.getMember().getIdLong(), role.getIdLong());
+
         }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
@@ -62,7 +61,7 @@ public class EventListener extends ListenerAdapter {
         List<Role> roleList=event.getRoles();
         try {
             for (Role role : roleList) {
-                con.removeUserFromRole(event.getMember().getIdLong(), role.getIdLong());
+
             }
         }catch (Exception e){
             LOGGER.error(e.getMessage());
@@ -72,7 +71,7 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onRoleCreate(@NotNull RoleCreateEvent event) {
         try {
-            con.writeToRole(event.getRole().getIdLong(),event.getRole().getName());
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -81,7 +80,7 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onRoleDelete(@NotNull RoleDeleteEvent event) {
         try {
-            con.removeRoleFromDB(event.getRole().getIdLong());
+
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
