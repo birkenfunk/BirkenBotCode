@@ -69,64 +69,6 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 				event.getChannel().sendMessage(builder.toString()).queue();
 			}
 		}
-		if(command.equalsIgnoreCase(prefix+"play")){//connects to a VoiceChannel
-			if(!Objects.requireNonNull(event.getMember().getVoiceState()).inVoiceChannel()){
-				event.getChannel().sendMessage("You have to be in a voice Channel").queue();
-				return;
-			}
-			if(splittedMessage.length<2) {
-				if(guild.getAudioManager().isConnected()){
-					PlayerManager.getManager().UnPauseTrack(event.getMessage());
-				}else{
-					event.getChannel().sendMessage("Please use the Command like this: "+prefix+"play [Link]").queue();
-				}
-
-				return;
-			}
-			StringBuilder buffer = new StringBuilder();
-			for (int i = 1; i < splittedMessage.length; i++) {
-				buffer.append(splittedMessage[i]).append(" ");
-			}
-			PlayerManager.getManager().loadAndPlay(event.getMessage(),buffer.toString());
-		}
-		if(command.equalsIgnoreCase(prefix+"leave")){//disconnects from a VoiceChannel
-			if(guild.getAudioManager().isConnected()){
-				if(Objects.requireNonNull(event.getMember().getVoiceState()).getChannel()==guild.getAudioManager().getConnectedChannel()||event.getMember().hasPermission(Permission.KICK_MEMBERS)) {
-					PlayerManager.getManager().Stop(event.getMessage());
-					guild.getAudioManager().closeAudioConnection();
-					event.getChannel().sendMessage("Disconnected").queue();
-				}else {
-					event.getChannel().sendMessage("You have to be in the same Voice Channel as the Bot").queue();
-				}
-			}else{
-				event.getChannel().sendMessage("Not Connected to an Audio Channel").queue();
-			}
-		}
-		if(command.equalsIgnoreCase(prefix+"skip")){
-			PlayerManager.getManager().skipTrack(event.getMessage());
-		}
-		if(command.equalsIgnoreCase(prefix+"pause")){
-			PlayerManager.getManager().pauseTrack(event.getMessage());
-		}
-		if(command.equalsIgnoreCase(prefix+"volume")){
-			if(splittedMessage.length<2){
-				event.getChannel().sendMessage("Please use the Command like this: !volume [0-10]").queue();
-			}
-			int temp = Integer.parseInt(splittedMessage[1]);
-			PlayerManager.getManager().Volume(temp, event.getMessage());
-		}
-		if(command.equalsIgnoreCase(prefix+"repeat")){
-			PlayerManager.getManager().Repeat(event.getMessage(), true);
-		}
-		if(command.equalsIgnoreCase(prefix+"loop")){
-			PlayerManager.getManager().Repeat(event.getMessage(), false);
-		}
-		if(command.equalsIgnoreCase(prefix+"clear")){
-			PlayerManager.getManager().Clear(event.getMessage());
-		}
-		if(command.equalsIgnoreCase(prefix+"shuffle")){
-			PlayerManager.getManager().Shuffle(event.getMessage());
-		}
 	}
 
 	/**
