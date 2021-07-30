@@ -147,8 +147,8 @@ public class SqlConnector implements IDatabase {
     @Override
     public void addUserToRole(long userID, long roleID, long serverID) {
         RoleToName roleToName = new RoleToName();
-        roleToName.setRole(roleRepo.getById(roleID));
-        roleToName.setUser(userRepo.getById(userID));
+        roleToName.setRole(mapper.roleDTOToRoleFunction.apply(getRole(roleID)));
+        roleToName.setUser(mapper.userDTOToUserFunction.apply(getUser(userID)));
         roleToName.setServerId(serverID);
         roleToNameRepo.save(roleToName);
     }
