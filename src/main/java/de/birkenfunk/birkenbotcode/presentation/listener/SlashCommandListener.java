@@ -1,20 +1,35 @@
 package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import java.time.OffsetDateTime;
-import java.util.Objects;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import de.birkenfunk.birkenbotcode.application.IDatabase;
+import de.birkenfunk.birkenbotcode.domain.RoleDTO;
+import de.birkenfunk.birkenbotcode.domain.UserDTO;
 import de.birkenfunk.birkenbotcode.presentation.Message;
 import de.birkenfunk.birkenbotcode.presentation.audio_player.PlayerManager;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.EmbedType;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
 
 public class SlashCommandListener extends ListenerAdapter{
 
 	private MessageEmbed messageEmbed;
+
+	private IDatabase database;
+
+	public SlashCommandListener(IDatabase database) {
+		this.database = database;
+	}
 
 	@Override
 	public void onSlashCommand(SlashCommandEvent event) {
@@ -23,10 +38,18 @@ public class SlashCommandListener extends ListenerAdapter{
 				event.getSubcommandName(),
 				event.getGuild(),
 				event.getTextChannel());
-		mangementCommands(command, message);
-		musicCommands(command, message);
-		new MessageEmbed(null, "Test", "Test", EmbedType.UNKNOWN, null,0,null,null,null,null,null,null,null);
-		event.replyEmbeds(messageEmbed).setEphemeral(true).queue();
+		event.deferReply().queue();
+		Thread t1 = new Thread(() -> {mangementCommands(command, message);
+			if(messageEmbed!= null)
+				event.getInteraction().getHook().editOriginalEmbeds(messageEmbed).queue();
+		});
+		Thread t2 = new Thread(() -> {
+			musicCommands(command, message);
+			if (messageEmbed != null)
+				event.getInteraction().getHook().editOriginalEmbeds(messageEmbed).queue();
+		});
+		t1.start();
+		t2.start();
 	}
 	
 	/**
@@ -40,7 +63,18 @@ public class SlashCommandListener extends ListenerAdapter{
 				message.getChannel().sendMessage("Work in Progress").queue();
 			}
 			if(command.equalsIgnoreCase("write-member")){ //Puts all Members of a Server into a Database
-				//writeMember(con,event,guild);
+				message.getGuild().loadMembers();
+				List<Member> members = new LinkedList<>(message.getGuild().getMembers());
+				List<Role> roles = new LinkedList<>(message.getGuild().getRoles());
+				roles.stream().map(roleToRoleDTO).forEach(role -> database.saveRole(role));
+				members.stream().map(memberToUserDTO).forEach(user -> database.saveUser(user));
+				members.forEach(member -> //Adds a user to a role
+					member.getRoles().forEach(
+							role -> database.addUserToRole(member.getIdLong(),
+									role.getIdLong(), 
+									member.getGuild().getIdLong()))
+				);
+				messageEmbed = simpleMessageBuilder("Info", "Added "+ members.size()+ "to the Database");
 			}
 		}
 	}
@@ -74,4 +108,43 @@ public class SlashCommandListener extends ListenerAdapter{
 			messageEmbed = playerManager.shuffle(message);
 	}
 	
+	
+	Function<Member, UserDTO> memberToUserDTO = new Function<Member, UserDTO>() {
+		
+		@Override
+		public UserDTO apply(Member t) {
+			UserDTO user = new UserDTO();
+			user.setName(t.getEffectiveName());
+			user.setUserID(t.getIdLong());
+			user.setTimeJoined(t.getTimeJoined());
+			return user;
+		}
+	};
+	
+	Function<Role, RoleDTO> roleToRoleDTO = new Function<Role, RoleDTO>() {
+		
+		@Override
+		public RoleDTO apply(Role t) {
+			RoleDTO role = new RoleDTO();
+			role.setName(t.getName());
+			role.setRoleID(t.getIdLong());
+			return role;
+		}
+	};
+	
+	private MessageEmbed simpleMessageBuilder(String title, String description){
+        return new MessageEmbed("",
+                title,
+                description,
+                EmbedType.RICH,
+                null,
+                255,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
 }
