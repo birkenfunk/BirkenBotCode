@@ -36,8 +36,8 @@ public class DTOMapper {
 
     public Function<RoleDTO, Role> roleDTOToRoleFunction = roleDTO -> {
         Role role = new Role();
-        role.setRoleID(role.getRoleID());
-        role.setName(role.getName());
+        role.setRoleID(roleDTO.getRoleID());
+        role.setName(roleDTO.getName());
         return role;
     };
 
@@ -51,9 +51,9 @@ public class DTOMapper {
 
     public Function<UserDTO, User> userDTOToUserFunction = userDTO -> {
         User user = new User();
-        user.setUserID(user.getUserID());
-        user.setName(user.getName());
-        user.setTimeJoined(user.getTimeJoined());
+        user.setUserID(userDTO.getUserID());
+        user.setName(userDTO.getName());
+        user.setTimeJoined(userDTO.getTimeJoined());
         return user;
     };
 
@@ -67,9 +67,9 @@ public class DTOMapper {
 
     public Function<ReactionRoleDTO, ReactionRole> reactionRoleDTOToReactionRoleFunction = reactionRoleDTO -> {
         ReactionRole reactionRole = new ReactionRole();
-        reactionRole.setEmojiID(reactionRole.getEmojiID());
+        reactionRole.setEmojiID(reactionRoleDTO.getEmojiID());
         reactionRole.setRoleID(roleDTOToRoleFunction.apply(reactionRoleDTO.getRoleID()));
-        reactionRole.setServerID(reactionRole.getServerID());
+        reactionRole.setServerID(reactionRoleDTO.getServerID());
         return reactionRole;
     };
 
