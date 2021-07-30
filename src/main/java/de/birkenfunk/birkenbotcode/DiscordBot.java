@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.apache.logging.log4j.LogManager;
@@ -55,11 +56,12 @@ public class DiscordBot {
 				new MessageListener(),
 				new ReactionListener(), 
 				new EventListener(), 
-				new SlashCommandListener());
+				new SlashCommandListener(database));
 		shardman= builder.build();
 		for (CommandDTO command : database.getCommands()) {
 			if (command.isServerCommand()) {
-				shardman.upsertCommand(command.getName(), command.getDescription()).queue();
+				//TODO .options einfügen
+				//shardman.upsertCommand(command.getName(), command.getDescription()).queue();
 			}
 		}
 		LOGGER.info("Bot online");
