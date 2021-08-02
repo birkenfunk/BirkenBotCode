@@ -1,14 +1,15 @@
 package de.birkenfunk.birkenbotcode.persistent.entity;
 
 import javax.persistence.*;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Role {
 
     private long roleID;
     private String name;
+    private Set<User> users = new HashSet<>();
 
     @Id
     @Column(name = "role_id", updatable = false, nullable = false)
@@ -28,5 +29,14 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
