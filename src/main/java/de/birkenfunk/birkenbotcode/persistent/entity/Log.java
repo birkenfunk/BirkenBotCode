@@ -13,7 +13,7 @@ public class Log {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LogID")
+    @Column(name = "log_id")
     public int getId() {
         return id;
     }
@@ -23,7 +23,7 @@ public class Log {
     }
 
     @ManyToOne
-    @JoinColumn(name = "CommandID", referencedColumnName = "CommandID")
+    @JoinColumn(name = "command_id", referencedColumnName = "command_id")
     public Command getCommand() {
         return command;
     }
@@ -33,7 +33,7 @@ public class Log {
     }
 
     @Basic
-    @Column(name = "Time")
+    @Column(name = "time")
     public Timestamp getTime() {
         return time;
     }
@@ -43,7 +43,7 @@ public class Log {
     }
 
     @ManyToOne
-    @JoinColumn(name = "UserID", referencedColumnName = "UserID")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     public User getUser() {
         return user;
     }

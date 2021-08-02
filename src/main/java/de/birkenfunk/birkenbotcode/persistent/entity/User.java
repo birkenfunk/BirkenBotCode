@@ -1,9 +1,7 @@
 package de.birkenfunk.birkenbotcode.persistent.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import java.time.OffsetDateTime;
 
 @Entity
@@ -17,7 +15,7 @@ public class User {
     }
 
     @Id
-    @Column(name = "UserID", updatable = false, nullable = false)
+    @Column(name = "user_id", updatable = false, nullable = false)
     public long getUserID(){
         return userID;
     }
@@ -27,7 +25,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "Name", nullable = false)
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -38,7 +36,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "TimeJoined", nullable = false)
+    @Column(name = "time_joined", nullable = false)
     public OffsetDateTime getTimeJoined() {
         return timeJoined;
     }

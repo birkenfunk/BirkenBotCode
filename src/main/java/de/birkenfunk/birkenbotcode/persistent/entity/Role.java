@@ -1,9 +1,8 @@
 package de.birkenfunk.birkenbotcode.persistent.entity;
 
-import javax.persistence.Basic;
+import javax.persistence.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 @Entity
 public class Role {
@@ -12,7 +11,7 @@ public class Role {
     private String name;
 
     @Id
-    @Column(name = "RoleID", updatable = false, nullable = false)
+    @Column(name = "role_id", updatable = false, nullable = false)
     public long getRoleID() {
         return roleID;
     }
@@ -22,7 +21,7 @@ public class Role {
     }
 
     @Basic
-    @Column(name = "RoleName", nullable = false)
+    @Column(name = "role_name", nullable = false)
     public String getName() {
         return name;
     }

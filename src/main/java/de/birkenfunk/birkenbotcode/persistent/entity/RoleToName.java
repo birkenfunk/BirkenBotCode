@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "role_to_name")
 @IdClass(RoleToNameId.class)
 public class RoleToName implements Serializable {
 
@@ -16,7 +17,7 @@ public class RoleToName implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "RoleId", referencedColumnName = "RoleId")
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     public Role getRole() {
         return role;
     }
@@ -27,7 +28,7 @@ public class RoleToName implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "UserId", referencedColumnName = "UserID")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     public User getUser() {
         return user;
     }
@@ -37,7 +38,7 @@ public class RoleToName implements Serializable {
     }
 
     @Id
-    @Column(name = "ServerId", nullable = false, updatable = false)
+    @Column(name = "server_id", nullable = false, updatable = false)
     public long getServerId() {
         return serverId;
     }

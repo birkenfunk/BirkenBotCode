@@ -11,7 +11,7 @@ public class Command {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CommandID", updatable = false)
+    @Column(name = "command_id", updatable = false)
     public int getId() {
         return id;
     }
@@ -21,7 +21,7 @@ public class Command {
     }
 
     @Basic
-    @Column(name = "Name", nullable = false)
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -31,7 +31,7 @@ public class Command {
     }
 
     @Basic
-    @Column(name = "Description", nullable = false)
+    @Column(name = "description", nullable = false)
     public String getDescription() {
         return description;
     }
@@ -41,7 +41,7 @@ public class Command {
     }
     
     @Basic
-    @Column(name = "Server", nullable = false)
+    @Column(name = "server", nullable = false)
     public boolean isServerCommand() {
     	return serverCommand;
     }
