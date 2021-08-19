@@ -145,24 +145,19 @@ public class SqlConnector implements IDatabase {
     }
 
     @Override
-    public void addUserToRole(long userID, long roleID, long serverID) {
-        RoleToName roleToName = new RoleToName();
-        roleToName.setRole(mapper.roleDTOToRoleFunction.apply(getRole(roleID)));
-        roleToName.setUser(mapper.userDTOToUserFunction.apply(getUser(userID)));
-        roleToName.setServerId(serverID);
-        roleToNameRepo.save(roleToName);
+    public void addUserToRole(long userID, long roleID) {
+        User user = mapper.userDTOToUserFunction.apply(getUser(userID));
+        Role role = mapper.roleDTOToRoleFunction.apply(getRole(roleID));
+        user.addRoleToUser(role);
+        role.addUserToRole(user);
     }
 
     @Override
-    public void removeUserFromRole(long userID, long roleID, long serverID) {
-        RoleToNameId roleToNameId = new RoleToNameId();
-        roleToNameId.setRole(roleRepo.getById(roleID));
-        roleToNameId.setUser(userRepo.getById(userID));
-        roleToNameId.setServerId(serverID);
-        Optional<RoleToName> roleToName = roleToNameRepo.findById(roleToNameId);
-        if(roleToName.isEmpty())
-            return;
-        roleToNameRepo.delete(roleToName.get());
+    public void removeUserFromRole(long userID, long roleID) {
+        User user = mapper.userDTOToUserFunction.apply(getUser(userID));
+        Role role = mapper.roleDTOToRoleFunction.apply(getRole(roleID));
+        user.removeRoleFromUser(role);
+        role.removeUserFromRole(user);
     }
 
     @Override

@@ -39,4 +39,12 @@ public class Role {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
+
+    public void addUserToRole(User userToAdd){
+        users.add(userToAdd);
+    }
+
+    public void removeUserFromRole(User userToRemove){
+        users.remove(userToRemove);
+    }
 }

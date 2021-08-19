@@ -41,9 +41,9 @@ public interface IDatabase {
 
     void addLog(LogDTO log);
 
-    void addUserToRole(long userID, long roleID, long serverID);
+    void addUserToRole(long userID, long roleID);
 
-    void removeUserFromRole(long userID, long roleID, long serverID);
+    void removeUserFromRole(long userID, long roleID);
 
     List<RoleToNameDTO> getRolesToName(long nameID);
 

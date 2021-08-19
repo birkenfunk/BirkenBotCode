@@ -68,8 +68,7 @@ public class SlashCommandListener extends ListenerAdapter{
 				members.forEach(member -> //Adds a user to a role
 					member.getRoles().forEach(
 							role -> database.addUserToRole(member.getIdLong(),
-									role.getIdLong(), 
-									member.getGuild().getIdLong()))
+									role.getIdLong()))
 				);
 				messageEmbed = simpleMessageBuilder("Info", "Added "+ members.size()+ "to the Database");
 			}
