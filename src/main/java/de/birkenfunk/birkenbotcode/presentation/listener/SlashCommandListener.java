@@ -7,6 +7,8 @@ import java.util.function.Function;
 import de.birkenfunk.birkenbotcode.application.IDatabase;
 import de.birkenfunk.birkenbotcode.domain.RoleDTO;
 import de.birkenfunk.birkenbotcode.domain.UserDTO;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
 import de.birkenfunk.birkenbotcode.presentation.Message;
 import de.birkenfunk.birkenbotcode.presentation.audio_player.PlayerManager;
 import net.dv8tion.jda.api.Permission;
@@ -67,8 +69,16 @@ public class SlashCommandListener extends ListenerAdapter{
 				members.stream().map(memberToUserDTO).forEach(user -> database.saveUser(user));
 				members.forEach(member -> //Adds a user to a role
 					member.getRoles().forEach(
-							role -> database.addUserToRole(member.getIdLong(),
-									role.getIdLong()))
+							role -> {
+								try {
+									database.addUserToRole(member.getIdLong(),
+											role.getIdLong());
+								} catch (UserNotFoundException e) {
+									e.printStackTrace();
+								} catch (RoleNotFoundException e) {
+									e.printStackTrace();
+								}
+							})
 				);
 				messageEmbed = simpleMessageBuilder("Info", "Added "+ members.size()+ "to the Database");
 			}
