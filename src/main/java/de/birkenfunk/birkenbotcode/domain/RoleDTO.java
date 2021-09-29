@@ -29,6 +29,6 @@ public class RoleDTO {
     }
 
     public void addUser(UserDTO userToAdd){
-
+        users.add(userToAdd);
     }
 }
