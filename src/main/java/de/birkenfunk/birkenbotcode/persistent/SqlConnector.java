@@ -3,7 +3,11 @@ package de.birkenfunk.birkenbotcode.persistent;
 import de.birkenfunk.birkenbotcode.application.IDatabase;
 import de.birkenfunk.birkenbotcode.domain.*;
 import de.birkenfunk.birkenbotcode.persistent.entity.*;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.repos.*;
+import one.util.streamex.StreamEx;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,43 +37,43 @@ public class SqlConnector implements IDatabase {
     @Autowired
     private UserRepo userRepo;
 
-    private DTOMapper mapper = new DTOMapper();
+    ModelMapper mapper = new ModelMapper();
 
     @Override
     public void saveRole(RoleDTO role) {
-        roleRepo.save(mapper.roleDTOToRoleFunction.apply(role));
+        roleRepo.save(mapper.map(role, Role.class));
     }
 
     @Override
     public RoleDTO getRole(long id) {
         Optional<Role> role = roleRepo.findById(id);
-        if(role.isEmpty())
+        if (role.isEmpty())
             return null;
-        return mapper.roleToRoleDTOFunction.apply(role.get());
+        return mapper.map(role.get(), RoleDTO.class);
     }
 
     @Override
     public void removeRole(long id) {
         Optional<Role> role = roleRepo.findById(id);
-        if(role.isEmpty())
+        if (role.isEmpty())
             return;
         roleRepo.delete(role.get());
     }
 
     @Override
     public List<RoleDTO> getRoles() {
-        return roleRepo.findAll().stream().map(mapper.roleToRoleDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(roleRepo.findAll()).map(it -> mapper.map(it, RoleDTO.class)).toList();
     }
 
     @Override
     public void saveUser(UserDTO user) {
-        userRepo.save(mapper.userDTOToUserFunction.apply(user));
+        userRepo.save(mapper.map(user, User.class));
     }
 
     @Override
     public void removeUser(long id) {
         Optional<User> user = userRepo.findById(id);
-        if(user.isEmpty())
+        if (user.isEmpty())
             return;
         userRepo.delete(user.get());
     }
@@ -77,25 +81,25 @@ public class SqlConnector implements IDatabase {
     @Override
     public UserDTO getUser(long id) {
         Optional<User> user = userRepo.findById(id);
-        if(user.isEmpty())
+        if (user.isEmpty())
             return null;
-        return mapper.userToUserDTOFunction.apply(user.get());
+        return mapper.map(user.get(), UserDTO.class);
     }
 
     @Override
     public List<UserDTO> getUsers() {
-        return userRepo.findAll().stream().map(mapper.userToUserDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(userRepo.findAll()).map(it -> mapper.map(it, UserDTO.class)).toList();
     }
 
     @Override
     public void saveCommand(CommandDTO command) {
-        commandRepo.save(mapper.commandDTOToCommandFunction.apply(command));
+        commandRepo.save(mapper.map(command, Command.class));
     }
 
     @Override
     public void removeCommand(int id) {
         Optional<Command> command = commandRepo.findById(id);
-        if(command.isEmpty())
+        if (command.isEmpty())
             return;
         commandRepo.delete(command.get());
     }
@@ -103,25 +107,25 @@ public class SqlConnector implements IDatabase {
     @Override
     public CommandDTO getCommand(int id) {
         Optional<Command> command = commandRepo.findById(id);
-        if(command.isEmpty())
+        if (command.isEmpty())
             return null;
-        return mapper.commandToCommandDTOFunction.apply(command.get());
+        return mapper.map(command.get(), CommandDTO.class);
     }
 
     @Override
     public List<CommandDTO> getCommands() {
-        return commandRepo.findAll().stream().map(mapper.commandToCommandDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(commandRepo.findAll()).map(it -> mapper.map(it, CommandDTO.class)).toList();
     }
 
     @Override
     public void saveReactionRole(ReactionRoleDTO reactionRole) {
-        reactionRoleRepo.save(mapper.reactionRoleDTOToReactionRoleFunction.apply(reactionRole));
+        reactionRoleRepo.save(mapper.map(reactionRole, ReactionRole.class));
     }
 
     @Override
     public void removeReactionRole(ReactionRoleID id) {
         Optional<ReactionRole> reactionRole = reactionRoleRepo.findById(id);
-        if(reactionRole.isEmpty())
+        if (reactionRole.isEmpty())
             return;
         reactionRoleRepo.delete(reactionRole.get());
     }
@@ -129,42 +133,62 @@ public class SqlConnector implements IDatabase {
     @Override
     public ReactionRoleDTO getReactionRole(ReactionRoleID reactionID) {
         Optional<ReactionRole> reactionRole = reactionRoleRepo.findById(reactionID);
-        if(reactionRole.isEmpty())
+        if (reactionRole.isEmpty())
             return null;
-        return mapper.reactionRoleToReactionRoleDTOFunction.apply(reactionRole.get());
+        return mapper.map(reactionRole.get(), ReactionRoleDTO.class);
     }
 
     @Override
     public List<ReactionRoleDTO> getReactionRoles() {
-        return reactionRoleRepo.findAll().stream().map(mapper.reactionRoleToReactionRoleDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(reactionRoleRepo.findAll()).map(it -> mapper.map(it, ReactionRoleDTO.class)).toList();
     }
 
     @Override
     public void addLog(LogDTO log) {
-        logRepo.save(mapper.logDTOToLogFunction.apply(log));
+        logRepo.save(mapper.map(log, Log.class));
     }
 
     @Override
-    public void addUserToRole(long userID, long roleID) {
-        User user = mapper.userDTOToUserFunction.apply(getUser(userID));
-        Role role = mapper.roleDTOToRoleFunction.apply(getRole(roleID));
-        user.addRoleToUser(role);
+    public void addUserToRole(long userID, long roleID) throws UserNotFoundException, RoleNotFoundException {
+        Optional<User> optionalUser = userRepo.findById(userID);
+        Optional<Role> optionalRole = roleRepo.findById(roleID);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException("User with Id: " + userID + "was not Found");
+        }
+        if (optionalRole.isEmpty()) {
+            throw new RoleNotFoundException("Role with Id: " + roleID + "was not Found");
+        }
+        Role role = optionalRole.get();
+        User user = optionalUser.get();
         role.addUserToRole(user);
+        user.addRoleToUser(role);
+        roleRepo.save(role);
+        userRepo.save(user);
     }
 
     @Override
-    public void removeUserFromRole(long userID, long roleID) {
-        User user = mapper.userDTOToUserFunction.apply(getUser(userID));
-        Role role = mapper.roleDTOToRoleFunction.apply(getRole(roleID));
-        user.removeRoleFromUser(role);
+    public void removeUserFromRole(long userID, long roleID) throws UserNotFoundException, RoleNotFoundException {
+        Optional<User> optionalUser = userRepo.findById(userID);
+        Optional<Role> optionalRole = roleRepo.findById(roleID);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException("User with Id: " + userID + "was not Found");
+        }
+        if (optionalRole.isEmpty()) {
+            throw new RoleNotFoundException("Role with Id: " + roleID + "was not Found");
+        }
+        Role role = optionalRole.get();
+        User user = optionalUser.get();
         role.removeUserFromRole(user);
+        user.removeRoleFromUser(role);
+        roleRepo.save(role);
+        userRepo.save(user);
     }
 
     @Override
     public List<RoleToNameDTO> getRolesToName(long nameID) {
         List<RoleToNameDTO> res = new LinkedList<>();
-        for (RoleToNameDTO roleToNameDTO: getAllNamesToRoles()) {
-            if(roleToNameDTO.getUser().getUserID()==nameID)
+        for (RoleToNameDTO roleToNameDTO : getAllNamesToRoles()) {
+            if (roleToNameDTO.getUser().getUserID() == nameID)
                 res.add(roleToNameDTO);
         }
         return res;
@@ -173,8 +197,8 @@ public class SqlConnector implements IDatabase {
     @Override
     public List<RoleToNameDTO> getNamesToRole(long roleID) {
         List<RoleToNameDTO> res = new LinkedList<>();
-        for (RoleToNameDTO roleToNameDTO: getAllNamesToRoles()) {
-            if(roleToNameDTO.getRole().getRoleID()==roleID)
+        for (RoleToNameDTO roleToNameDTO : getAllNamesToRoles()) {
+            if (roleToNameDTO.getRole().getRoleID() == roleID)
                 res.add(roleToNameDTO);
         }
         return res;
@@ -182,11 +206,11 @@ public class SqlConnector implements IDatabase {
 
     @Override
     public List<RoleToNameDTO> getAllNamesToRoles() {
-        return roleToNameRepo.findAll().stream().map(mapper.roleToNameTORoleToNameDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(roleToNameRepo.findAll()).map(it -> mapper.map(it, RoleToNameDTO.class)).toList();
     }
 
     @Override
     public List<LogDTO> getLog() {
-        return logRepo.findAll().stream().map(mapper.logToLogDTOFunction).collect(Collectors.toList());
+        return StreamEx.of(logRepo.findAll()).map(it -> mapper.map(it, LogDTO.class)).toList();
     }
 }
