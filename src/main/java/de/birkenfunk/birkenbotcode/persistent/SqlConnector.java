@@ -37,7 +37,8 @@ public class SqlConnector implements IDatabase {
     @Autowired
     private UserRepo userRepo;
 
-    ModelMapper mapper = new ModelMapper();
+    private Logger Logger = LogManager.getLogger(this.getClass());
+    private ModelMapper mapper = new ModelMapper();
 
     @Override
     public void saveRole(RoleDTO role) {
