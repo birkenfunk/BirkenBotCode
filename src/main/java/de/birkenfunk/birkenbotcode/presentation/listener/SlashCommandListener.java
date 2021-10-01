@@ -39,17 +39,24 @@ public class SlashCommandListener extends ListenerAdapter{
 				event.getTextChannel());
 		event.deferReply().queue();
 		Thread t1 = new Thread(() -> {mangementCommands(command, message);
-			if(messageEmbed!= null)
+			if(messageEmbed!= null) {
 				event.getInteraction().getHook().editOriginalEmbeds(messageEmbed).queue();
+				messageEmbed = null;
+			}
 		});
 		Thread t2 = new Thread(() -> {
 			musicCommands(command, message);
-			if (messageEmbed != null)
+			if (messageEmbed != null) {
 				event.getInteraction().getHook().editOriginalEmbeds(messageEmbed).queue();
+				messageEmbed = null;
+			}
 		});
 		t1.start();
 		t2.start();
 	}
+
+
+	HashMap<Role, Set<UserDTO>> roleToUsers= new HashMap<>();
 	
 	/**
 	 * Method for checking for a music command
