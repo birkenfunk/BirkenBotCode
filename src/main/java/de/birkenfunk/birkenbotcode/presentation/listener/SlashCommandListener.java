@@ -1,7 +1,6 @@
 package de.birkenfunk.birkenbotcode.presentation.listener;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import de.birkenfunk.birkenbotcode.application.IDatabase;
@@ -18,6 +17,9 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import one.util.streamex.StreamEx;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class SlashCommandListener extends ListenerAdapter{
@@ -25,6 +27,9 @@ public class SlashCommandListener extends ListenerAdapter{
 	private MessageEmbed messageEmbed;
 
 	private IDatabase database;
+
+
+	private Logger logger = LogManager.getLogger(this.getClass());
 
 	public SlashCommandListener(IDatabase database) {
 		this.database = database;
@@ -70,28 +75,24 @@ public class SlashCommandListener extends ListenerAdapter{
 			}
 			if(command.equalsIgnoreCase("write-member")){ //Puts all Members of a Server into a Database
 				message.getGuild().loadMembers();
-				List<Member> members = new LinkedList<>(message.getGuild().getMembers());
-				List<Role> roles = new LinkedList<>(message.getGuild().getRoles());
-				roles.stream().map(roleToRoleDTO).forEach(role -> database.saveRole(role));
-				members.stream().map(memberToUserDTO).forEach(user -> database.saveUser(user));
-				members.forEach(member -> //Adds a user to a role
-					member.getRoles().forEach(
-							role -> {
-								try {
-									database.addUserToRole(member.getIdLong(),
-											role.getIdLong());
-								} catch (UserNotFoundException e) {
-									e.printStackTrace();
-								} catch (RoleNotFoundException e) {
-									e.printStackTrace();
-								}
-							})
-				);
-				messageEmbed = simpleMessageBuilder("Info", "Added "+ members.size()+ "to the Database");
+				List<UserDTO> users = StreamEx.of(message.getGuild().getMembers()).map(this::userRoleToMap).toList();
+				List<RoleDTO> roles = StreamEx.of(message.getGuild().getRoles()).map(it -> roleToRoleDTO.apply(it)).toList();
+				logger.error(roleToUsers.entrySet());
+				roleToUsers.clear();
+				messageEmbed = simpleMessageBuilder("Info", "Added "+ 0 + "to the Database");
 			}
 		}
 	}
-	
+
+	private UserDTO userRoleToMap(Member member){
+		UserDTO user = memberToUserDTO.apply(member);
+		Set<UserDTO> users = new HashSet<>();
+		users.add(user);
+		StreamEx.of(member.getRoles()).forEachOrdered(it -> Optional.ofNullable(roleToUsers.putIfAbsent(it, users)).map(it2 -> it2.add(user)));
+
+		return user;
+	}
+
 	/**
 	 * Method for checking for a music command
 	 * @param command Name of the command
