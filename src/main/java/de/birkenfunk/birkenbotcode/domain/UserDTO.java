@@ -44,4 +44,14 @@ public class UserDTO {
             roles = new HashSet<>();
         roles.add(roleToAdd);
     }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "userID=" + userID +
+                ", name='" + name + '\'' +
+                ", timeJoined=" + timeJoined +
+                ", roles=" + roles +
+                '}';
+    }
 }
