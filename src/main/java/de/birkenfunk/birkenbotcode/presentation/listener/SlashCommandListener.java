@@ -76,12 +76,22 @@ public class SlashCommandListener extends ListenerAdapter{
 			if(command.equalsIgnoreCase("write-member")){ //Puts all Members of a Server into a Database
 				message.getGuild().loadMembers();
 				List<UserDTO> users = StreamEx.of(message.getGuild().getMembers()).map(this::userRoleToMap).toList();
-				List<RoleDTO> roles = StreamEx.of(message.getGuild().getRoles()).map(it -> roleToRoleDTO.apply(it)).toList();
-				logger.error(roleToUsers.entrySet());
+				List<RoleDTO> roles = StreamEx.of(roleToUsers.entrySet()).map(it -> roleDtoWithUsers(it.getKey())).toList();
+				database.saveUsers(users);
+				database.saveRoles(roles);
 				roleToUsers.clear();
 				messageEmbed = simpleMessageBuilder("Info", "Added "+ 0 + "to the Database");
 			}
 		}
+	}
+
+	private RoleDTO roleDtoWithUsers(Role role){
+		RoleDTO roleDTO = roleToRoleDTO.apply(role);
+		StreamEx.of(roleToUsers.get(role)).forEachOrdered(it -> {
+			roleDTO.addUser(it);
+			it.addRole(roleDTO);
+		});
+		return roleDTO;
 	}
 
 	private UserDTO userRoleToMap(Member member){

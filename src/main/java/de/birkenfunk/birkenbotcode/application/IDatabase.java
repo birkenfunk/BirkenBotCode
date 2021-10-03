@@ -11,6 +11,8 @@ public interface IDatabase {
 
     void saveRole(RoleDTO role);
 
+    public void saveRoles(List<RoleDTO> roles);
+
     void removeRole(long id);
 
     RoleDTO getRole(long id);
@@ -18,6 +20,8 @@ public interface IDatabase {
     List<RoleDTO> getRoles();
 
     void saveUser(UserDTO user);
+
+    public void saveUsers(List<UserDTO> users);
 
     void removeUser(long id);
 

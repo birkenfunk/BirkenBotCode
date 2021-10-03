@@ -7,6 +7,8 @@ import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.repos.*;
 import one.util.streamex.StreamEx;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,11 @@ public class SqlConnector implements IDatabase {
     }
 
     @Override
+    public void saveRoles(List<RoleDTO> roles) {
+        roleRepo.saveAll(StreamEx.of(roles).map(it -> mapper.map(it, Role.class)).toList());
+    }
+
+    @Override
     public RoleDTO getRole(long id) {
         Optional<Role> role = roleRepo.findById(id);
         if (role.isEmpty())
@@ -69,6 +76,11 @@ public class SqlConnector implements IDatabase {
     @Override
     public void saveUser(UserDTO user) {
         userRepo.save(mapper.map(user, User.class));
+    }
+
+    @Override
+    public void saveUsers(List<UserDTO> users) {
+        userRepo.saveAll(StreamEx.of(users).map(it -> mapper.map(it, User.class)).toList());
     }
 
     @Override
