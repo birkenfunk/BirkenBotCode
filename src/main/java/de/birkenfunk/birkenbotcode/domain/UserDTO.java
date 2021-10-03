@@ -39,6 +39,10 @@ public class UserDTO {
         this.roles = roles;
     }
 
+    public Set<RoleDTO> getRoles() {
+        return roles;
+    }
+
     public void addRole(RoleDTO roleToAdd){
         roles.add(roleToAdd);
     }
