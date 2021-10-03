@@ -51,11 +51,5 @@ public interface IDatabase {
 
     void removeUserFromRole(long userID, long roleID) throws UserNotFoundException, RoleNotFoundException;
 
-    List<RoleToNameDTO> getRolesToName(long nameID);
-
-    List<RoleToNameDTO> getNamesToRole(long roleID);
-
-    List<RoleToNameDTO> getAllNamesToRoles();
-
     List<LogDTO> getLog();
 }

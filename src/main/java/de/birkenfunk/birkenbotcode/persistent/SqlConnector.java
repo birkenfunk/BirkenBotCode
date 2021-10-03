@@ -7,16 +7,12 @@ import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.repos.*;
 import one.util.streamex.StreamEx;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SqlConnector implements IDatabase {
@@ -34,13 +30,9 @@ public class SqlConnector implements IDatabase {
     private RoleRepo roleRepo;
 
     @Autowired
-    private RoleToNameRepo roleToNameRepo;
-
-    @Autowired
     private UserRepo userRepo;
 
-    private Logger Logger = LogManager.getLogger(this.getClass());
-    private ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper = new ModelMapper();
 
     @Override
     public void saveRole(RoleDTO role) {
@@ -195,31 +187,6 @@ public class SqlConnector implements IDatabase {
         user.removeRoleFromUser(role);
         roleRepo.save(role);
         userRepo.save(user);
-    }
-
-    @Override
-    public List<RoleToNameDTO> getRolesToName(long nameID) {
-        List<RoleToNameDTO> res = new LinkedList<>();
-        for (RoleToNameDTO roleToNameDTO : getAllNamesToRoles()) {
-            if (roleToNameDTO.getUser().getUserID() == nameID)
-                res.add(roleToNameDTO);
-        }
-        return res;
-    }
-
-    @Override
-    public List<RoleToNameDTO> getNamesToRole(long roleID) {
-        List<RoleToNameDTO> res = new LinkedList<>();
-        for (RoleToNameDTO roleToNameDTO : getAllNamesToRoles()) {
-            if (roleToNameDTO.getRole().getRoleID() == roleID)
-                res.add(roleToNameDTO);
-        }
-        return res;
-    }
-
-    @Override
-    public List<RoleToNameDTO> getAllNamesToRoles() {
-        return StreamEx.of(roleToNameRepo.findAll()).map(it -> mapper.map(it, RoleToNameDTO.class)).toList();
     }
 
     @Override
