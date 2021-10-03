@@ -41,7 +41,8 @@ public class SqlConnector implements IDatabase {
 
     @Override
     public void saveRoles(List<RoleDTO> roles) {
-        roleRepo.saveAll(StreamEx.of(roles).map(it -> mapper.map(it, Role.class)).toList());
+        List<Role> roleList = StreamEx.of(roles).map(it -> mapper.map(it, Role.class)).toList();
+        roleRepo.saveAll(roleList);
     }
 
     @Override
@@ -72,7 +73,8 @@ public class SqlConnector implements IDatabase {
 
     @Override
     public void saveUsers(List<UserDTO> users) {
-        userRepo.saveAll(StreamEx.of(users).map(it -> mapper.map(it, User.class)).toList());
+        List<User> userList = StreamEx.of(users).map(it -> mapper.map(it, User.class)).toList();
+        userRepo.saveAll(userList);
     }
 
     @Override
