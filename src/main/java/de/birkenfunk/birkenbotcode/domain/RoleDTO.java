@@ -1,12 +1,13 @@
 package de.birkenfunk.birkenbotcode.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class RoleDTO {
 
     private long roleID;
     private String name;
-    private Set<UserDTO> users;
+    private Set<UserDTO> users = new HashSet<>();
 
     public long getRoleID() {
         return roleID;

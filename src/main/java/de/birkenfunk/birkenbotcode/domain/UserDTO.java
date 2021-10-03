@@ -9,7 +9,7 @@ public class UserDTO {
     private long userID;
     private String name;
     private OffsetDateTime timeJoined;
-    private Set<RoleDTO> roles;
+    private Set<RoleDTO> roles = new HashSet<>();
 
     public long getUserID() {
         return userID;
@@ -40,8 +40,6 @@ public class UserDTO {
     }
 
     public void addRole(RoleDTO roleToAdd){
-        if(roles==null)
-            roles = new HashSet<>();
         roles.add(roleToAdd);
     }
 
