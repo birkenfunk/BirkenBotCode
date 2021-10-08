@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.concurrent.Task;
 import one.util.streamex.StreamEx;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -138,27 +139,19 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
 
-    Function<Member, UserDTO> memberToUserDTO = new Function<Member, UserDTO>() {
-
-        @Override
-        public UserDTO apply(Member t) {
+    Function<Member, UserDTO> memberToUserDTO = it -> {
             UserDTO user = new UserDTO();
-            user.setName(t.getEffectiveName());
-            user.setUserID(t.getIdLong());
-            user.setTimeJoined(t.getTimeJoined());
+            user.setName(it.getEffectiveName());
+            user.setUserID(it.getIdLong());
+            user.setTimeJoined(it.getTimeJoined());
             return user;
-        }
     };
 
-    Function<Role, RoleDTO> roleToRoleDTO = new Function<Role, RoleDTO>() {
-
-        @Override
-        public RoleDTO apply(Role t) {
+    Function<Role, RoleDTO> roleToRoleDTO = it -> {
             RoleDTO role = new RoleDTO();
-            role.setName(t.getName());
-            role.setRoleID(t.getIdLong());
+            role.setName(it.getName());
+            role.setRoleID(it.getIdLong());
             return role;
-        }
     };
 
     private MessageEmbed simpleMessageBuilder(String title, String description) {
