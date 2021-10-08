@@ -3,6 +3,7 @@ package de.birkenfunk.birkenbotcode.persistent.entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "reaction_role")
 @IdClass(ReactionRoleID.class)
 public class ReactionRole {
 
@@ -11,7 +12,7 @@ public class ReactionRole {
     private long serverID;
 
     @Id
-    @Column(name = "EmojiID", nullable = false)
+    @Column(name = "emoji_id", nullable = false)
     public String getEmojiID() {
         return emojiID;
     }
@@ -21,7 +22,7 @@ public class ReactionRole {
     }
 
     @ManyToOne
-    @JoinColumn(name = "RoleID", referencedColumnName = "RoleID")
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     public Role getRoleID() {
         return roleID;
     }
@@ -31,7 +32,7 @@ public class ReactionRole {
     }
 
     @Id
-    @Column(name = "ServerID", nullable = false)
+    @Column(name = "server_id", nullable = false)
     public long getServerID() {
         return serverID;
     }

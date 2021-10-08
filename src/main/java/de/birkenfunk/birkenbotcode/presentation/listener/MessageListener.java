@@ -111,7 +111,7 @@ public class MessageListener extends ListenerAdapter implements AccessMixins, Co
 		String[] splittedMessage = message.split(" ");
 		StringBuilder stringBuffer = new StringBuilder();
 
-		for (int i= 1;splittedMessage.length-1<i;i++)
+		for (int i= 1;splittedMessage.length-1>=i;i++)
 			stringBuffer.append(splittedMessage[i]).append(" ");
 		stringBuffer.append(splittedMessage[splittedMessage.length-1]);
 

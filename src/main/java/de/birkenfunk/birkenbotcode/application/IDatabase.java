@@ -2,12 +2,16 @@ package de.birkenfunk.birkenbotcode.application;
 
 import de.birkenfunk.birkenbotcode.domain.*;
 import de.birkenfunk.birkenbotcode.persistent.entity.ReactionRoleID;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
+import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
 
 import java.util.List;
 
 public interface IDatabase {
 
     void saveRole(RoleDTO role);
+
+    public void saveRoles(List<RoleDTO> roles);
 
     void removeRole(long id);
 
@@ -16,6 +20,8 @@ public interface IDatabase {
     List<RoleDTO> getRoles();
 
     void saveUser(UserDTO user);
+
+    public void saveUsers(List<UserDTO> users);
 
     void removeUser(long id);
 
@@ -41,15 +47,9 @@ public interface IDatabase {
 
     void addLog(LogDTO log);
 
-    void addUserToRole(long userID, long roleID, long serverID);
+    void addUserToRole(long userID, long roleID) throws UserNotFoundException, RoleNotFoundException;
 
-    void removeUserFromRole(long userID, long roleID, long serverID);
-
-    List<RoleToNameDTO> getRolesToName(long nameID);
-
-    List<RoleToNameDTO> getNamesToRole(long roleID);
-
-    List<RoleToNameDTO> getAllNamesToRoles();
+    void removeUserFromRole(long userID, long roleID) throws UserNotFoundException, RoleNotFoundException;
 
     List<LogDTO> getLog();
 }
