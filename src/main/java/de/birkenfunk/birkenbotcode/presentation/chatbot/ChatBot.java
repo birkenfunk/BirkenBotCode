@@ -9,6 +9,9 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.util.*;
 import opennlp.tools.util.model.ModelUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -17,6 +20,7 @@ import java.util.Map;
 public class ChatBot {
     /*todo Documentation*/
     private static final Map<String, String> answersToQuestions = new HashMap<>();
+    private static final Logger LOGGER = LogManager.getLogger(ChatBot.class);
 
     private static String[] tokenizeSentence(String message) throws IOException {
         try (InputStream modelIn = new FileInputStream("./src/de.Birkenfunk.chatbot/models/en-token.bin")) {
@@ -72,7 +76,7 @@ public class ChatBot {
             String category = detectCategory(model, lemmas);
             return answersToQuestions.get(category);
         } catch(IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.toString());
         }
         return "";
     }
