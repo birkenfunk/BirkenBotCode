@@ -8,6 +8,7 @@ import de.birkenfunk.birkenbotcode.domain.RoleDTO;
 import de.birkenfunk.birkenbotcode.domain.UserDTO;
 import de.birkenfunk.birkenbotcode.persistent.exceptions.RoleNotFoundException;
 import de.birkenfunk.birkenbotcode.persistent.exceptions.UserNotFoundException;
+import de.birkenfunk.birkenbotcode.presentation.Mapper;
 import de.birkenfunk.birkenbotcode.presentation.Message;
 import de.birkenfunk.birkenbotcode.presentation.audio_player.PlayerManager;
 import net.dv8tion.jda.api.Permission;
@@ -89,7 +90,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private RoleDTO roleDtoWithUsers(Role role) {
-        RoleDTO roleDTO = roleToRoleDTO.apply(role);
+        RoleDTO roleDTO = Mapper.roleToRoleDTO.apply(role);
         StreamEx.of(roleToUsers.get(role))
                 .remove(Objects::isNull)
                 .forEachOrdered(it -> {
@@ -100,7 +101,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
     private UserDTO userRoleToMap(Member member) {
-        UserDTO user = memberToUserDTO.apply(member);
+        UserDTO user = Mapper.memberToUserDTO.apply(member);
         Set<UserDTO> users = new HashSet<>();
         users.add(user);
         StreamEx.of(member.getRoles()).forEachOrdered(it -> Optional.ofNullable(roleToUsers.putIfAbsent(it, users)).map(it2 -> it2.add(user)));
@@ -139,20 +140,7 @@ public class SlashCommandListener extends ListenerAdapter {
     }
 
 
-    Function<Member, UserDTO> memberToUserDTO = it -> {
-            UserDTO user = new UserDTO();
-            user.setName(it.getEffectiveName());
-            user.setUserID(it.getIdLong());
-            user.setTimeJoined(it.getTimeJoined());
-            return user;
-    };
 
-    Function<Role, RoleDTO> roleToRoleDTO = it -> {
-            RoleDTO role = new RoleDTO();
-            role.setName(it.getName());
-            role.setRoleID(it.getIdLong());
-            return role;
-    };
 
     private MessageEmbed simpleMessageBuilder(String title, String description) {
         return new MessageEmbed("",
