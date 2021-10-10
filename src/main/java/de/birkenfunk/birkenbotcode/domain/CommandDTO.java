@@ -1,5 +1,7 @@
 package de.birkenfunk.birkenbotcode.domain;
 
+import java.util.Objects;
+
 public class CommandDTO {
 
     private int id;
@@ -38,4 +40,17 @@ public class CommandDTO {
 	public void setServerCommand(boolean serverCommand) {
 		this.serverCommand = serverCommand;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CommandDTO)) return false;
+        CommandDTO that = (CommandDTO) o;
+        return id == that.id || name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }
