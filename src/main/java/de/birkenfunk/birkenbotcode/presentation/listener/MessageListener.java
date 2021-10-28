@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public class MessageListener extends ListenerAdapter implements AccessMixins, CommandFormatMixins {
 
-	private final char prefix = '!';
+	private final char prefix = '!'; 
 	/**
 	 * Reacts to a Message in a Privat Chat
 	 * @param event A event that should be handled
