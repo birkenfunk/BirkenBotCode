@@ -4,7 +4,11 @@
   "description": "Code for the BirkenBot Discord Bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node src/index.ts",
+    "start:deb": "ts-node-dev src/index.ts",
+    "start:prod": "node dist/index.ts",
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -17,6 +21,16 @@
   },
   "homepage": "https://github.com/birkenfunk/BirkenBotCode#readme",
   "dependencies": {
-    "discord.js": "^13.8.1"
+    "discord.js": "^13.8.1",
+    "dotenv": "^16.0.1",
+    "glob": "^8.0.3"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/node": "^18.0.4",
+    "eslint": "^8.19.0",
+    "ts-node": "^10.8.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   }
 }
