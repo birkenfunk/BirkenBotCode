@@ -1,0 +1,11 @@
+= BirkenBotCode
+:toc:
+
+= Used Licenses:
+link:licenses.json[Licenses]
+
+
+
+= License
+
+BirkenBot is link:LICENSE[Apache License].
