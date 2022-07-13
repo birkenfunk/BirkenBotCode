@@ -8,7 +8,8 @@
     "start:deb": "ts-node-dev src/index.ts",
     "start:prod": "node dist/index.ts",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "license": "license-checker --json --out licenses.json --relativeLicensePath && node removePath.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,8 @@
   "dependencies": {
     "discord.js": "^13.8.1",
     "dotenv": "^16.0.1",
-    "glob": "^8.0.3"
+    "glob": "^8.0.3",
+    "license-checker": "^25.0.1"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
