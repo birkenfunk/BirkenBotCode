@@ -1057,9 +1057,7 @@
     "licenses": "MIT",
     "repository": "https://github.com/Sebmaster/tr46.js",
     "publisher": "Sebastian Mayr",
-    "email": "npm@smayr.name",
-    "path": "/home/Alexander/Documents/Uni-Projekte/BirkenBotCode/node_modules/tr46"
-  },
+    "email": "npm@smayr.name"  },
   "tree-kill@1.2.2": {
     "licenses": "MIT",
     "repository": "https://github.com/pkrumins/node-tree-kill",

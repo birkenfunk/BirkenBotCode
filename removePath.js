@@ -1,5 +1,5 @@
 const fs = require("fs");
-const SEMVER_REGEX =  /,\n(\r)?.*"path".*\n.*"licenseFile".*/gm;
+const SEMVER_REGEX =  /(,\n(\r)?.*"path".*\n)?(.*"licenseFile".*)?/gm;
 
 function removeVersionNumber() {
     const data = fs.readFileSync('licenses.json', 'utf-8');
