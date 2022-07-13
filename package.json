@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/birkenfunk/BirkenBotCode/issues"
   },
-  "homepage": "https://github.com/birkenfunk/BirkenBotCode#readme"
+  "homepage": "https://github.com/birkenfunk/BirkenBotCode#readme",
+  "dependencies": {
+    "discord.js": "^13.8.1"
+  }
 }
