@@ -2,4 +2,4 @@
 
 ## License
 
-Nest is [Apache License](LICENSE).
+BirkenBot is [Apache License](LICENSE).
