@@ -1,10 +1,12 @@
 = BirkenBotCode
 :toc:
 
-= Used Licenses:
+= Purpose of this Project
+
+This is a university related project, which serves to learn new programming skills. This project shall always remain open source. If you want to participate in the project you can send me an email birkenfunk@outlook.de
+
+= Used Licenses
 link:licenses.json[Licenses]
-
-
 
 = License
 
