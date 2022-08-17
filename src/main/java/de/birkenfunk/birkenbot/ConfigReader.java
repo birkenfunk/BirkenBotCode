@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
  * @Author Birkenfunk
  */
 public class ConfigReader {
-    private static final String CONFIG_FILE = "config.properties";
+    private static final String CONFIG_FILE = "config.local";
     private static final ResourceBundle CONFIG = ResourceBundle.getBundle(CONFIG_FILE);
     /**
      * Returns the UserIDs which are allowed to administrate the bot.
