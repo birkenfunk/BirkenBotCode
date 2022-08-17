@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" strict="true" name="XMLConfigTest"
+               packages="de.birkenfunk.birkenbot">
+    <Properties>
+        <Property name="filename">logs/log.log</Property>
+    </Properties>
+    <Filter type="ThresholdFilter" level="trace"/>
+    <Appenders>
+        <Appender type="Console" name="STOUT">
+            <Layout type="PatternLayout" pattern="%p %m%n"/>
+        </Appender>
+        <RollingFile name="fileLogger"
+                     fileName="logs/log.log"
+                     filePattern="logs/log-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d %p %c{1.} [%t] %m%n
+                </pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <!-- Max 10 files will be created everyday -->
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${basePathr}" maxDepth="10">
+                    <!-- Delete all files older than 30 days -->
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="de.birkenfunk.birkenbot" level="trace" additivity="false">
+            <AppenderRef ref="STOUT"/>
+            <AppenderRef ref="fileLogger"/>
+        </Logger>
+</Loggers>
+
+</Configuration>
